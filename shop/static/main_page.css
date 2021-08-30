@@ -1,0 +1,39 @@
+#main-options{
+    align-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10%;
+}
+#main-options > span{
+    min-width: 100px;
+    max-width: 200px;
+    padding: 0.5%;
+    position: relative;
+    text-align: center;
+}
+
+#main-options > span > a >img{
+    border-radius: 10px;
+    min-width: 100%;
+    max-width: 100%;
+}
+
+#main-options a{
+    color: white;
+    text-decoration:none;
+}
+
+
+@media screen and (max-width: 992px) {
+    #main-options{
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    #main-options > span{
+        background-color: burlywood;
+        width: 100%;
+    }
+}

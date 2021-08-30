@@ -1,0 +1,33 @@
+.icon-design{
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);;
+}
+.flash-message{
+    margin-top: 5%;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+.link-design{
+    color: white;
+    text-decoration: none;
+}
+
+.back-icon{
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+@media screen and (max-width:992px) {
+    .flash-message{
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .back-icon{
+        margin-top: 5px;
+        margin-right: 10px;
+    }
+}

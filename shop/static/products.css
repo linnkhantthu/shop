@@ -1,0 +1,152 @@
+table {
+  border-spacing: 1px;
+  border-collapse: collapse;
+  background: #212529;
+  border-radius: 6px;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+table * {
+  position: relative;
+}
+table td,
+table th {
+  padding-left: 8px;
+}
+table thead tr {
+  height: 60px;
+  background: green;
+  font-size: 16px;
+}
+table tbody tr {
+  height: 48px;
+  border-bottom: 1px solid #e3f1d5;
+}
+table tbody tr:last-child {
+  border: 0;
+}
+table td,
+table th {
+  text-align: left;
+}
+table td.l,
+table th.l {
+  text-align: right;
+}
+table td.c,
+table th.c {
+  text-align: center;
+}
+table td.r,
+table th.r {
+  text-align: center;
+}
+
+body {
+  background: #9bc86a;
+  font: 400 14px "Calibri", "Arial";
+}
+.normal-img{
+height: 100px;
+width: 100px;
+}
+.zoom-img{
+height: 100%;
+width: 100%;
+}
+.footer {
+position: fixed;
+bottom: 0;
+color: white;
+}
+.search{
+height: 40px;
+}
+.div-products-heading{
+display: flex;
+flex-direction: row;
+width: 100%;
+padding:10px;
+position: relative;
+}
+.div-products-heading > div{
+padding:5px;
+}
+.size_search{
+display: flex;
+flex-direction: row;
+max-width: 300px;
+}
+.size_search > input{
+margin-right: 10px;
+}
+.back-icon{
+  margin-top: 5px;
+}
+.div-header{
+  display: flex;
+}
+.footer {
+    position: fixed;
+    background-color: rgb(54, 59, 64);
+}
+.footer > a{
+    margin:10px;
+}
+
+@media screen and (max-width: 770px) {
+    table {
+    display: block;
+  }
+  table > *,
+table tr,
+table td,
+table th {
+    display: block;
+  }
+  table thead {
+    display: none;
+  }
+  table tbody tr {
+    height: auto;
+    padding: 8px 0;
+  }
+  table tbody tr td {
+    padding-left: 45%;
+    margin-bottom: 12px;
+  }
+  table tbody tr td:last-child {
+    margin-bottom: 0;
+  }
+  table tbody tr td:before {
+    position: absolute;
+    font-weight: 700;
+    width: 40%;
+    left: 10px;
+    top: 0;
+  }
+  table tbody tr td:nth-child(1):before {
+    content: "ID";
+  }
+
+  table tbody tr td:nth-child(2):before {
+    content: "Name";
+  }
+  table tbody tr td:nth-child(3):before {
+    content: "Image";
+  }
+  table tbody tr td:nth-child(4):before {
+    content: "Type";
+  }
+  table tbody tr td:nth-child(5):before {
+    content: "Unit";
+  }
+  table tbody tr td:nth-child(6):before {
+    content: "Price";
+  }
+  .div-products-heading{
+    flex-direction: column;
+  }
+}

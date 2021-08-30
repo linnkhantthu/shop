@@ -1,0 +1,151 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_products.css') }}">
+    <script src="{{ url_for('static', filename='js/add_products.js') }}"></script>
+{% endblock head %}
+    
+{% block body %}
+    <a class="link-design back-icon" href="{{ url_for('inventory.products') }}" >
+        <i class="fa fa-angle-left"></i>
+        Products
+    </a>
+    <form action="" enctype="multipart/form-data" class="login-form" method="POST">
+        <h2 class="text-center">Add Products</h2>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.ID.label(class="form-control-label") }}
+            {% if form.ID.errors %}
+                {{ form.ID(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.ID.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.ID(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group mt-3">
+            {{ form.name.label(class="form-control-label") }}
+            {% if form.name.errors %}
+                {{ form.name(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.name.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.name(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group mt-3">
+          {{ form.image.label(class="form-control-label") }}
+          {% if form.image.errors %}
+              {{ form.image(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                  {% for error in form.image.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.image(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        <div class="form-group mt-3">
+            {{ form.p_type.label(class="form-control-label") }}
+            <i class="text-light" data-bs-toggle="modal" data-bs-target="#editProdTypeModal" style="float: right; cursor:pointer;">Edit</i>
+            <i class="text-info" data-bs-toggle="modal" data-bs-target="#addProdTypeModal" style="float: right; cursor:pointer; margin-right:10px;"> + Add</i> 
+            
+            {% if form.p_type.errors %}
+                {{ form.p_type(class="form-control form-control-lg is-invalid", id='prod_type') }}
+                <div class="invalid-feedback">
+                    {% for error in form.p_type.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.p_type(class="form-control form-control-lg", id='prod_type') }}
+            {% endif %}
+          </div>
+          <div class="form-group mt-3">
+            {{ form.unit.label(class="form-control-label") }}
+            {% if form.unit.errors %}
+                {{ form.unit(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.unit.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.unit(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+          <div class="form-group mt-3">
+            {{ form.price.label(class="form-control-label") }}
+            {% if form.price.errors %}
+                {{ form.price(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.price.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.price(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-success mt-3") }}
+        </div>
+    </form>
+    <!--Add product type Modal -->
+    <div class="modal fade modal-font" id="addProdTypeModal" tabindex="-1" aria-labelledby="addProdTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addProdTypeModalLabel">Add product type</h5>
+              <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+              <form action="" method="POST">
+                  {{ p_type_form.hidden_tag() }}
+                  <div class="modal-body">
+                      {{ p_type_form.product_type.label(class="form-control-label") }}
+                      {{ p_type_form.product_type(class="form-control form-control-lg") }}
+                  </div>
+                  <div class="modal-footer">
+                      {{ p_type_form.pt_submit(class="btn btn-success") }}
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+
+      <!--Edit product type Modal -->
+    <div class="modal fade modal-font" id="editProdTypeModal" tabindex="-1" aria-labelledby="editProdTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editProdTypeModalLabel">Edit product type</h5>
+              <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                    <div class="choices-modal">
+                        {% for product_type_choice in product_type_choices %}
+                            <div id="div{{ product_type_choice.id }}">
+                                <span id="span_pt_choices{{ product_type_choice.id }}">{{ product_type_choice.choices }}</span>
+                                <i onclick="choices_trash('div{{ product_type_choice.id }}')" style="float:right;font-size:x-large;" class="fa fa-trash text-danger"></i>
+                                <i id="edit_icon_id{{ product_type_choice.id }}" onclick="choices_edit('div{{ product_type_choice.id }}', 'span_pt_choices{{ product_type_choice.id }}', '/products/edit_product_type',' {{csrf_token()}}')" style="float:right;font-size:x-large;margin-right:2px;" class="fa fa-edit text-white"></i>
+                                <hr>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="submit_choices('{{ url_for('inventory.delete_ptype') }}')" type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+{% endblock body %}

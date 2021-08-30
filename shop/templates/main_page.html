@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='main_page.css') }}">
+{% endblock head %}
+{% block body %}
+    <main class="container">
+        <div id="main-options">
+            <span>
+                <a href="{{ url_for('inventory.inventory_page') }}">
+                    <img src="{{ url_for('static', filename='images/inventory-img.png') }}" alt="images">
+                    <div class=".centered-text">Inventory</div>
+                </a>
+            </span>
+            <span>
+                <a href="#">
+                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
+                    <div class=".centered-text">Demo Text 1</div>
+                </a>
+            </span>
+            <span>
+                <a href="#">
+                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
+                    <div class=".centered-text">Demo Text 1</div>
+                </a>
+            </span>
+            <span>
+                <a href="#">
+                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
+                    <div class=".centered-text">Demo Text 1</div>
+                </a>
+            </span>
+            <span>
+                <a href="#">
+                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
+                    <div class=".centered-text">Demo Text 1</div>
+                </a>
+            </span>
+            <span>
+                <a href="#">
+                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
+                    <div class=".centered-text">Demo Text 1</div>
+                </a>
+            </span>
+            <span>
+                <a href="#">
+                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
+                    <div class=".centered-text">Demo Text 1</div>
+                </a>
+            </span>
+            <span>
+                <a href="#">
+                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
+                    <div class=".centered-text">Demo Text 1</div>
+                </a>
+            </span>
+        </div>
+    </main>
+{% endblock body %}

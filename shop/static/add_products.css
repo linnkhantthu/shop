@@ -1,0 +1,6 @@
+.choices-modal{
+    display: flex;
+    flex-direction: column;
+    font-size: large;
+    width: 100%;
+}

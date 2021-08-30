@@ -1,0 +1,166 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='products.css') }}">
+{% endblock head %}
+{% block body %}
+        <div class="div-header">
+            <a class="link-design back-icon" href="{{ url_for('inventory.inventory_page') }}">
+              <i class="fa fa-angle-left"></i> Back
+            </a>
+          <h2><u>Products</u></h2>
+        </div>
+        <div class="div-products-heading">
+          <div>
+            <a class="btn btn-success link-design" href="{{ url_for('inventory.add_products') }}" >
+              Add Products
+            </a>
+            <span class="setting_flex">
+              <a class="btn btn-primary link-design" href="#">
+                Settings
+              </a>
+            </span>
+          </div>
+          <div>
+            <form action="" method="POST">
+              {{ form.hidden_tag() }}
+                <div class="size_search">
+                  {{ form.search(placeholder='Search products', class="form-control") }}
+                  {{ form.submit(class="btn btn-info") }}
+                </div>
+            </form>
+          </div>
+        </div>
+        <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Type</th>
+                <th>Unit</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            <thead>
+            <tbody>
+              {% for product in products.items %}
+                <tr>
+                  <td>{{ product.product_id }}</td>
+                  <td>{{ product.name }}</td>
+                  <td>
+                    <!-- Button trigger modal -->
+                    <div data-bs-toggle="modal" data-bs-target="#div{{ product.product_id }}Modal">
+                      <img class="normal-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}" style="cursor:zoom-in;">
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade modal-font" id="div{{ product.product_id }}Modal" tabindex="-1" aria-labelledby="div{{ product.product_id }}ModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content bg-dark">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="div{{ product.product_id }}ModalLabel">{{ product.name }}(ID: {{ product.product_id }})</h5>
+                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <img class="zoom-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}">
+                          </div>
+                          <div class="modal-footer">
+                            <div class="w-100">
+                              <div class="modal-footer-cus">
+                                Price: {{ product.price }}
+                              </div>
+                              <div class="modal-footer-cus">
+                                Unit: {{ product.unit }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ product.p_type }}</td>
+                  <td>{{ product.unit }}</td>
+                  <td>{{ product.price }}</td>
+                  <td style="font-size:x-large;text-decoration:none">
+                    <!-- Edit modal -->
+                    <i class="fa fa-edit text-primary" data-bs-toggle="modal" data-bs-target="#edit{{ product.product_id }}Modal" style="cursor:pointer;"></i>
+
+                    <!-- Modal -->
+                    <div class="modal fade modal-font" id="edit{{ product.product_id }}Modal" tabindex="-1" aria-labelledby="edit{{ product.product_id }}ModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content bg-dark">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="edit{{ product.product_id }}ModalLabel">Update product ID: {{ product.product_id }}</h5>
+                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Delete Modal -->
+
+                    <i class="fa fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#delete{{ product.product_id }}Modal" style="cursor:pointer;"></i>
+
+                    <!-- Modal -->
+                    <div class="modal fade modal-font" id="delete{{ product.product_id }}Modal" tabindex="-1" aria-labelledby="delete{{ product.product_id }}ModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content bg-dark">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="delete{{ product.product_id }}ModalLabel">Delete product ID: {{ product.product_id }}</h5>
+                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            Are you sure you want to delete product ID: {{ product.product_id }}?
+                          </div>
+                          <div class="modal-footer">
+                            <a href="{{ url_for('inventory.delete_product', product_id=product.id) }}" class="btn btn-danger">Delete</a>
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+                <!--</form>-->
+            </tbody>
+        </table>
+
+        {% if search %}
+          <div class="container footer">
+            {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+              {% if products.page == page_num %}
+                  <a  class="btn btn-info" href="{{ url_for('inventory.products', page=page_num, search=search) }}">{{ page_num }}</a>
+              {% else %}
+                  <a  class="btn btn-outline-info" href="{{ url_for('inventory.products', page=page_num, search=search) }}">{{ page_num }}</a>
+              {% endif %}
+            {% else %}
+              ...
+            {% endif %}
+            {% endfor %}
+          </div>
+        {% else %}
+        <div class="container footer">
+            <abbr title="Back to Top"><a href="#top" class="fa fa-arrow-circle-up link-design"></a></abbr>
+          {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+          {% if page_num %}
+            {% if products.page == page_num %}
+                <a  class="btn btn-info" href="{{ url_for('inventory.products', page=page_num) }}">{{ page_num }}</a>
+            {% else %}
+                <a  class="btn btn-outline-info" href="{{ url_for('inventory.products', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+          {% else %}
+            ...
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+{% endblock body %}
