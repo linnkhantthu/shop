@@ -25,6 +25,6 @@ htmlcov/
 .coverage
 .coverage.*
 *,cover
-shop/*.db
+shop/shop.db
 shop/static/products_images
 
