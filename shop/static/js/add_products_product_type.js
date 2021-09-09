@@ -9,10 +9,10 @@ function choices_trash(c_id) {
     c_id_dict = {}
 }
 function submit_choices(url) {
-    var success_list = []
-    var success_list_str = ""
-    var fail_list = []
-    var fail_list_str = ""
+    var success_list = [];
+    var success_list_str = "";
+    var fail_list = [];
+    var fail_list_str = "";
     var csrf_token = document.getElementById("csrf_token").getAttribute("value");
     var http = new XMLHttpRequest();
     http.open('post', url);
@@ -57,22 +57,22 @@ function submit_choices(url) {
             }
         });
         if (fail_list_str != "" && success_list_str != "") {
-            document.getElementById('flash-msg').innerHTML = 
+            document.getElementById('flash-msg').innerHTML =
                 '<div class="alert alert-info">'+
-                    'Deleted: ' + success_list_str + 
+                    'Deleted: ' + success_list_str +
                    'Could not delete: '+ fail_list_str +
                 '</div>';
         }
         else if(fail_list_str == "" && success_list_str != ""){
-            document.getElementById('flash-msg').innerHTML = 
+            document.getElementById('flash-msg').innerHTML =
                 '<div class="alert alert-info">'+
-                    'Deleted: ' + success_list_str + 
+                    'Deleted: ' + success_list_str +
                 '</div>';
         }
         else if(fail_list_str != "" && success_list_str == ""){
-            document.getElementById('flash-msg').innerHTML = 
+            document.getElementById('flash-msg').innerHTML =
                 '<div class="alert alert-info">'+
-                'Could not delete: '+ fail_list_str + 
+                'Could not delete: '+ fail_list_str +
                 '</div>';
         }
         else{
@@ -123,7 +123,7 @@ function choices_edit(id, edit_choice_id, url, csrf_token) {
     temp = id.replace('div', '');
     pt_choice_id_list.push(parseInt(temp));
     var choice_span = document.getElementById(edit_choice_id);
-    
+
     //create_form
     var edit_pt_form = document.createElement('form');
     edit_pt_form.setAttribute('action', '');
@@ -137,16 +137,16 @@ function choices_edit(id, edit_choice_id, url, csrf_token) {
     edit_input.setAttribute('name', 'edit_input_'+temp);
     edit_input.setAttribute('id', 'edit_input_'+temp);
     edit_input.setAttribute('value', choice_span.textContent);
-    
+
     var old_choice_value = choice_span.textContent;
 
     //submit icon
     var edit_submit_icon = document.createElement('i');
-    edit_submit_icon.setAttribute('class', 'fa fa-check btn btn-success ')
-    edit_submit_icon.setAttribute('style', 'float:right; font-size:15px;')
+    edit_submit_icon.setAttribute('class', 'fa fa-check')
+    edit_submit_icon.setAttribute('style', 'margin-left:2px; color:green;, font-size:10px;')
     edit_submit_icon.setAttribute('id', 'edit_submit_id'+temp);
     edit_submit_icon.setAttribute('onClick', 'submit_pt_func("'+temp+'", "'+url+'", "'+csrf_token+'", "'+old_choice_value+'")');
-    
+
 
     //append input to form
     edit_pt_form.appendChild(edit_input);
@@ -154,15 +154,14 @@ function choices_edit(id, edit_choice_id, url, csrf_token) {
 
     //hide edit icon
     hide_tag('edit_icon_id'+temp);
-    hide_tag('trash_icon_id'+temp);
 
     //append form to span
     choice_span.innerHTML = ""; // remove inner text
     choice_span.appendChild(edit_pt_form);
-     
+
 }
 
-function submit_pt_func(id, url, csrf_token, old_choice_value) { 
+function submit_pt_func(id, url, csrf_token, old_choice_value) {
     var edit_data = document.forms.namedItem('edit_form_id'+id)
     var formdata = new FormData(edit_data);
     var http = new XMLHttpRequest();
@@ -179,7 +178,6 @@ function submit_pt_func(id, url, csrf_token, old_choice_value) {
             choice_span.innerHTML = new_choice_value;
             editOptionFromSelect('prod_type', old_choice_value, new_choice_value);
             show_tag('edit_icon_id'+id)
-            show_tag('trash_icon_id'+id)
         }
         else{
             var error_tag = document.createElement('small');

@@ -10,7 +10,7 @@ from flask import flash
 
 
 class ProductsForm(FlaskForm):
-    ID= IntegerField('ID', validators=[DataRequired()])
+    ID = IntegerField('ID', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
     image = FileField('Image', validators=[FileAllowed(['jpg', 'png'], DataRequired())])
     p_type = SelectField('Select product type', validators=[DataRequired()])
@@ -19,10 +19,11 @@ class ProductsForm(FlaskForm):
     submit = SubmitField('Add')
 
     def validate_ID(self, ID):
-        product = Products.query.filter(Products.product_id==ID.data, Products.user_id==current_user.id).first()
+        product = Products.query.filter(Products.product_id == ID.data, Products.user_id == current_user.id).first()
 
         if product:
-            last_product = Products.query.order_by(Products.user_id==current_user.id, Products.product_id.desc()).first()
+            last_product = Products.query.order_by(Products.user_id == current_user.id,
+                                                   Products.product_id.desc()).first()
             raise ValidationError(f"This ID is already exist. Recommended: {last_product.product_id + 1}")
 
 
@@ -39,7 +40,20 @@ class AddProductTypeForm(FlaskForm):
     pt_submit = SubmitField('Add')
 
     def validate_product_type(self, product_type):
-        pt_exist = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id, ProductTypeChoices.choices == product_type.data).first()
+        pt_exist = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id,
+                                                   ProductTypeChoices.choices == product_type.data).first()
         if pt_exist:
             flash('Product already exist.', 'danger')
             raise ValidationError("Product already exist.")
+
+
+class AddUnitForm(FlaskForm):
+    unit = StringField('Unit', validators=[DataRequired()])
+    unit_submit = SubmitField('Add')
+
+    def validate_product_type(self, unit):
+        unit_exist = UnitChoices.query.filter(UnitChoices.user_id == current_user.id,
+                                              UnitChoices.choices == unit.data).first()
+        if unit_exist:
+            flash('Unit already exist.', 'danger')
+            raise ValidationError("Unit already exist.")

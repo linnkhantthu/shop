@@ -1,18 +1,18 @@
 var c_id_list = [];
 var c_id_dict = {}
-function choices_trash(c_id) {
+function unit_choices_trash(c_id) {
     var temp = ""
-    temp = c_id.replace('div', '');
-    hide_tag('div'+temp)
+    temp = c_id.replace('unit_div', '');
+    hide_tag('unit_div'+temp)
     c_id_dict['id'] = parseInt(temp);
     c_id_list.push(c_id_dict)
     c_id_dict = {}
 }
-function submit_choices(url) {
-    var success_list = []
-    var success_list_str = ""
-    var fail_list = []
-    var fail_list_str = ""
+function unit_submit_choices(url) {
+    var success_list = [];
+    var success_list_str = "";
+    var fail_list = [];
+    var fail_list_str = "";
     var csrf_token = document.getElementById("csrf_token").getAttribute("value");
     var http = new XMLHttpRequest();
     http.open('post', url);
@@ -21,15 +21,15 @@ function submit_choices(url) {
     http.onload = function(){
         var response = JSON.parse(http.responseText);
         response.forEach(res => {
-            var p_id = res['id']
-            var product_name = res['product_name'];
+            var unit_id = res['id']
+            var unit = res['unit'];
             var status = res['status'];
             if (status) {
-                success_list.push(product_name);
+                success_list.push(unit);
             }
             else{
-                show_tag('div'+p_id);
-                fail_list.push(product_name);
+                show_tag('unit_div'+unit_id);
+                fail_list.push(unit);
             }
         });
 
@@ -43,7 +43,7 @@ function submit_choices(url) {
             else{
                 success_list_str += sl + ',';
             }
-            removeOptionFromSelect('prod_type', sl);
+            removeOptionFromSelect('unt', sl);
         });
         fail_list.forEach((sl, index) => {
             if(index == fail_list.length - 2){
@@ -57,22 +57,22 @@ function submit_choices(url) {
             }
         });
         if (fail_list_str != "" && success_list_str != "") {
-            document.getElementById('flash-msg').innerHTML = 
+            document.getElementById('flash-msg').innerHTML =
                 '<div class="alert alert-info">'+
-                    'Deleted: ' + success_list_str + 
+                    'Deleted: ' + success_list_str +
                    'Could not delete: '+ fail_list_str +
                 '</div>';
         }
         else if(fail_list_str == "" && success_list_str != ""){
-            document.getElementById('flash-msg').innerHTML = 
+            document.getElementById('flash-msg').innerHTML =
                 '<div class="alert alert-info">'+
-                    'Deleted: ' + success_list_str + 
+                    'Deleted: ' + success_list_str +
                 '</div>';
         }
         else if(fail_list_str != "" && success_list_str == ""){
-            document.getElementById('flash-msg').innerHTML = 
+            document.getElementById('flash-msg').innerHTML =
                 '<div class="alert alert-info">'+
-                'Could not delete: '+ fail_list_str + 
+                'Could not delete: '+ fail_list_str +
                 '</div>';
         }
         else{
@@ -116,19 +116,19 @@ function editOptionFromSelect(id, old_value, new_value) {
     }
 }
 
-// choices_edit
+// unit_choices_edit
 var pt_choice_id_list = []
-function choices_edit(id, edit_choice_id, url, csrf_token) {
+function unit_choices_edit(id, edit_choice_id, url, csrf_token) {
     var temp = ""
-    temp = id.replace('div', '');
+    temp = id.replace('unit_div', '');
     pt_choice_id_list.push(parseInt(temp));
     var choice_span = document.getElementById(edit_choice_id);
-    
+
     //create_form
     var edit_pt_form = document.createElement('form');
     edit_pt_form.setAttribute('action', '');
     edit_pt_form.setAttribute('method', 'post');
-    edit_pt_form.setAttribute('name', 'edit_form_id'+temp);
+    edit_pt_form.setAttribute('name', 'unit_edit_form_id'+temp);
     edit_pt_form.setAttribute('onsubmit', 'return false');
 
     //create input
@@ -137,33 +137,32 @@ function choices_edit(id, edit_choice_id, url, csrf_token) {
     edit_input.setAttribute('name', 'edit_input_'+temp);
     edit_input.setAttribute('id', 'edit_input_'+temp);
     edit_input.setAttribute('value', choice_span.textContent);
-    
+
     var old_choice_value = choice_span.textContent;
 
     //submit icon
     var edit_submit_icon = document.createElement('i');
-    edit_submit_icon.setAttribute('class', 'fa fa-check btn btn-success ')
-    edit_submit_icon.setAttribute('style', 'float:right; font-size:15px;')
-    edit_submit_icon.setAttribute('id', 'edit_submit_id'+temp);
-    edit_submit_icon.setAttribute('onClick', 'submit_pt_func("'+temp+'", "'+url+'", "'+csrf_token+'", "'+old_choice_value+'")');
-    
+    edit_submit_icon.setAttribute('class', 'fa fa-check')
+    edit_submit_icon.setAttribute('style', 'margin-left:2px; color:green;, font-size:10px;')
+    edit_submit_icon.setAttribute('id', 'unit_edit_submit_id'+temp);
+    edit_submit_icon.setAttribute('onClick', 'submit_unit_func("'+temp+'", "'+url+'", "'+csrf_token+'", "'+old_choice_value+'")');
+
 
     //append input to form
     edit_pt_form.appendChild(edit_input);
     edit_pt_form.appendChild(edit_submit_icon);
 
     //hide edit icon
-    hide_tag('edit_icon_id'+temp);
-    hide_tag('trash_icon_id'+temp);
+    hide_tag('unit_edit_icon_id'+temp);
 
     //append form to span
     choice_span.innerHTML = ""; // remove inner text
     choice_span.appendChild(edit_pt_form);
-     
+
 }
 
-function submit_pt_func(id, url, csrf_token, old_choice_value) { 
-    var edit_data = document.forms.namedItem('edit_form_id'+id)
+function submit_unit_func(id, url, csrf_token, old_choice_value) {
+    var edit_data = document.forms.namedItem('unit_edit_form_id'+id)
     var formdata = new FormData(edit_data);
     var http = new XMLHttpRequest();
     http.open('POST', url, true);
@@ -174,12 +173,11 @@ function submit_pt_func(id, url, csrf_token, old_choice_value) {
     http.send(params);
     http.onload = function(){
         data = http.responseText;
-        var choice_span = document.getElementById('span_pt_choices'+id);
+        var choice_span = document.getElementById('span_unit_choices'+id);
         if(data == 'true'){
             choice_span.innerHTML = new_choice_value;
-            editOptionFromSelect('prod_type', old_choice_value, new_choice_value);
-            show_tag('edit_icon_id'+id)
-            show_tag('trash_icon_id'+id)
+            editOptionFromSelect('unt', old_choice_value, new_choice_value);
+            show_tag('unit_edit_icon_id'+id)
         }
         else{
             var error_tag = document.createElement('small');

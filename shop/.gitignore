@@ -18,10 +18,13 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
+.vs
 
 # Coverage reports
 htmlcov/
 .coverage
 .coverage.*
 *,cover
-*.db
+shop/*.db
+shop/static/products_images
+

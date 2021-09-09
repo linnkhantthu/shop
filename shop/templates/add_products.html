@@ -2,7 +2,8 @@
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='add_products.css') }}">
-    <script src="{{ url_for('static', filename='js/add_products.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/add_products_product_type.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/add_products_unit.js') }}"></script>
 {% endblock head %}
     
 {% block body %}
@@ -70,15 +71,18 @@
           </div>
           <div class="form-group mt-3">
             {{ form.unit.label(class="form-control-label") }}
+            <i class="text-light" data-bs-toggle="modal" data-bs-target="#editUnitModal" style="float: right; cursor:pointer;">Edit</i>
+            <i class="text-info" data-bs-toggle="modal" data-bs-target="#addUnitModal" style="float: right; cursor:pointer; margin-right:10px;"> + Add</i>
+
             {% if form.unit.errors %}
-                {{ form.unit(class="form-control form-control-lg is-invalid") }}
+                {{ form.unit(class="form-control form-control-lg is-invalid", id='unt') }}
                 <div class="invalid-feedback">
                     {% for error in form.unit.errors %}
                     <span>{{ error }}</span>
                     {% endfor %}
                 </div>
             {% else %}
-                {{ form.unit(class="form-control form-control-lg") }}
+                {{ form.unit(class="form-control form-control-lg", id='unt') }}
             {% endif %}
           </div>
           <div class="form-group mt-3">
@@ -143,6 +147,57 @@
                 </div>
                 <div class="modal-footer">
                     <button onclick="submit_choices('{{ url_for('inventory.delete_ptype') }}')" type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+
+    <!--Add unit Modal -->
+    <div class="modal fade modal-font" id="addUnitModal" tabindex="-1" aria-labelledby="addUnitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addUnitModalLabel">Add Unit</h5>
+              <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+              <form action="" method="POST">
+                  {{ unitForm.hidden_tag() }}
+                  <div class="modal-body">
+                      {{ unitForm.unit.label(class="form-control-label") }}
+                      {{ unitForm.unit(class="form-control form-control-lg") }}
+                  </div>
+                  <div class="modal-footer">
+                      {{ unitForm.unit_submit(class="btn btn-success") }}
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+
+      <!--Edit unit Modal -->
+    <div class="modal fade modal-font" id="editUnitModal" tabindex="-1" aria-labelledby="editUnitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editUnitModalLabel">Edit product type</h5>
+              <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                    <div class="choices-modal">
+                        {% for unit_choice in unit_choices %}
+                            <div id="unit_div{{ unit_choice.id }}">
+                                <span id="span_unit_choices{{ unit_choice.id }}">{{ unit_choice.choices }}</span>
+                                <i onclick="unit_choices_trash('unit_div{{ unit_choice.id }}')" style="float:right;font-size:x-large;" class="fa fa-trash text-danger"></i>
+                                <i id="unit_edit_icon_id{{ unit_choice.id }}" onclick="unit_choices_edit('unit_div{{ unit_choice.id }}', 'span_unit_choices{{ unit_choice.id }}', '/products/edit_unit',' {{csrf_token()}}')" style="float:right;font-size:x-large;margin-right:2px;" class="fa fa-edit text-white"></i>
+                                <hr>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="unit_submit_choices('{{ url_for('inventory.delete_unit') }}')" type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                   </div>
               </form>
           </div>
