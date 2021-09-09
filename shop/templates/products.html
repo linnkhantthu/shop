@@ -3,33 +3,33 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='products.css') }}">
 {% endblock head %}
 {% block body %}
+        <!-- Header -->
         <div class="div-header">
             <a class="link-design back-icon" href="{{ url_for('inventory.inventory_page') }}">
               <i class="fa fa-angle-left"></i> Back
             </a>
           <h2><u>Products</u></h2>
         </div>
+        <!-- buttons -->
         <div class="div-products-heading">
-          <div>
-            <a class="btn btn-success link-design" href="{{ url_for('inventory.add_products') }}" >
-              Add Products
-            </a>
-            <span class="setting_flex">
-              <a class="btn btn-primary link-design" href="#">
-                Settings
-              </a>
-            </span>
-          </div>
-          <div>
+          <!-- float-left -->
+          <span class="div_buttons">
+            <a class="btn btn-success link-design" href="{{ url_for('inventory.add_products') }}" >Add Products</a>
+            <span class="setting_flex"><a class="btn btn-primary link-design" href="#">Settings</a></span>
+          </span>
+          <!-- float-right -->
+          <span class="div_search_form">
             <form action="" method="POST">
               {{ form.hidden_tag() }}
                 <div class="size_search">
-                  {{ form.search(placeholder='Search products', class="form-control") }}
-                  {{ form.submit(class="btn btn-info") }}
+                  {{ form.search(placeholder='ID/Name', class="form-control") }}
+                  {{ form.p_type(class="form-control") }}
+                  {{ form.submit(class="btn btn-info", style="margin-left:5px;") }}
                 </div>
             </form>
-          </div>
+          </span>
         </div>
+        <!-- Product Table -->
         <table>
             <thead>
               <tr>

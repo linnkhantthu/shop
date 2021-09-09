@@ -19,14 +19,37 @@ def inventory_page():
 @inventory.route('/products', methods=['POST', 'GET'])
 @login_required
 def products():
+    form_product_type_choices = [(None, 'Select product type')]
     search = None
     page = request.args.get('page', 1, type=int)
     products = Products.query.filter_by(user=current_user).paginate(page=page, per_page=5)
     form = SearchProductForm()
+    product_type_choices = ProductTypeChoices.query.filter_by(user=current_user)
+    for product_type_choice in product_type_choices:
+        temp = (product_type_choice.choices, product_type_choice.choices)
+        form_product_type_choices.append(temp)
+    form.p_type.choices = form_product_type_choices
     if form.validate_on_submit():
-        if form.search.data:
-            search = form.search.data
-            print(search)
+        # filter by both args i.e: search and product type
+        search = form.search.data
+        if search == '':
+            # if user didn't give search args
+            search = None
+        if form.p_type.data == 'None':
+            # if user didn't give product type
+            form.p_type.data = None
+
+        if form.search.data and form.p_type.data:
+            try:
+                int_search = int(search)
+                int_search = '%{0}%'.format(int_search)
+                products = Products.query.filter(Products.user == current_user, Products.p_type==form.p_type.data,Products.product_id.ilike(int_search)).paginate(page=page, per_page=5)
+            except:
+                str_search = '%{0}%'.format(search)
+                products = Products.query.filter(Products.user == current_user, Products.p_type==form.p_type.data, Products.name.ilike(str_search)).paginate(page=page, per_page=5)
+            form.search.data = search
+        # filter by only search
+        elif form.search.data and not form.p_type.data:
             try:
                 int_search = int(search)
                 int_search = '%{0}%'.format(int_search)
@@ -35,6 +58,13 @@ def products():
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user, Products.name.ilike(str_search)).paginate(page=page, per_page=5)
             form.search.data = search
+        else:
+            try:
+                products = Products.query.filter(Products.user == current_user, Products.p_type==form.p_type.data).paginate(page=page, per_page=5)
+            except:
+                products = Products.query.filter(Products.user == current_user, Products.p_type==form.p_type.data).paginate(page=page, per_page=5)
+            form.search.data = search
+
     return render_template('products.html', products=products, form=form, search=search)
 
 

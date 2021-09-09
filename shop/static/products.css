@@ -3,7 +3,7 @@ table {
   border-collapse: collapse;
   background: #212529;
   border-radius: 6px;
-  overflow: hidden;
+  overflow: auto;
   width: 100%;
   margin: 0 auto;
   position: relative;
@@ -56,11 +56,6 @@ width: 100px;
 height: 100%;
 width: 100%;
 }
-.footer {
-position: fixed;
-bottom: 0;
-color: white;
-}
 .search{
 height: 40px;
 }
@@ -71,13 +66,18 @@ width: 100%;
 padding:10px;
 position: relative;
 }
-.div-products-heading > div{
-padding:5px;
+.div-products-heading > .div_buttons{
+  order: 1;
+  margin-right: auto;
+}
+.div-products-heading > .div_search_form{
+  order: 2;
+  margin-left: auto;
 }
 .size_search{
 display: flex;
 flex-direction: row;
-max-width: 300px;
+max-width: 500px;
 }
 .size_search > input{
 margin-right: 10px;
@@ -89,9 +89,11 @@ margin-right: 10px;
   display: flex;
 }
 .footer {
-    position: fixed;
-    background-color: rgb(54, 59, 64);
-}
+  position: fixed;
+  bottom: 0;
+  color: white;
+  background-color: rgb(54, 59, 64);
+  }
 .footer > a{
     margin:10px;
 }
@@ -149,4 +151,14 @@ table th {
   .div-products-heading{
     flex-direction: column;
   }
+  .div-products-heading > .div_buttons{
+  order: 1;
+  margin-right: auto;
+}
+.div-products-heading > .div_search_form{
+  order: 2;
+  margin-top: 2%;
+  margin-right: auto;
+  margin-left: 0;
+}
 }

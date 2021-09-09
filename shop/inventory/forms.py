@@ -29,7 +29,8 @@ class ProductsForm(FlaskForm):
 class SearchProductForm(FlaskForm):
     '''class Meta:
         csrf = False'''
-    search = StringField('Search products')
+    search = StringField('Search by ID or Name')
+    p_type = SelectField('Search by product type')
     submit = SubmitField('Search')
 
 
