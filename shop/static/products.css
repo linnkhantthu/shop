@@ -7,6 +7,7 @@ table {
   width: 100%;
   margin: 0 auto;
   position: relative;
+  margin-bottom: 50px;
 }
 table * {
   position: relative;

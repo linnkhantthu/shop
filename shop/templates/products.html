@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='products.css') }}">
+    <script src="{{ url_for('static', filename='js/inventory/products.js') }}"></script>
 {% endblock head %}
 {% block body %}
         <!-- Header -->
@@ -30,7 +31,7 @@
           </span>
         </div>
         <!-- Product Table -->
-        <table>
+        <table class="sortable">
             <thead>
               <tr>
                 <th>ID</th>
