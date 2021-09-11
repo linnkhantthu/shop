@@ -44,6 +44,9 @@ table td.r,
 table th.r {
   text-align: center;
 }
+th{
+  cursor: pointer;
+}
 
 body {
   background: #9bc86a;
@@ -97,6 +100,20 @@ margin-right: 10px;
   }
 .footer > a{
     margin:10px;
+}
+.modal-font{
+    font-size:small;
+}
+.edit-form-col{
+  display: flex;
+  flex-direction: column;
+}
+.edit-form-main{
+  display: flex;
+  flex-direction: row;
+}
+.edit-form-child{
+  padding: 5px;
 }
 
 @media screen and (max-width: 770px) {

@@ -1,3 +1,4 @@
+from itertools import product
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields.core import StringField, SelectField, FloatField
@@ -57,3 +58,18 @@ class AddUnitForm(FlaskForm):
         if unit_exist:
             flash('Unit already exist.', 'danger')
             raise ValidationError("Unit already exist.")
+
+
+class ProductUpdateForm(FlaskForm):
+    product_id = IntegerField('ID')
+    name = StringField('Name', validators=[DataRequired()])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png'], DataRequired())])
+    p_type = SelectField('Select product type', validators=[DataRequired()])
+    unit = SelectField('Select unit', validators=[DataRequired()])
+    price = IntegerField('Price', validators=[DataRequired()])
+    submit_update_form = SubmitField('Update')
+
+    def validate_name(self, name, product_id):
+        product = Products.query.filter(Products.name == name, Products.user_id == current_user.id, Products.id != product_id).first()
+        if product:
+            raise ValidationError("Product name already exist.")

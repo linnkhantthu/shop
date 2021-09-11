@@ -3,7 +3,7 @@ from werkzeug.wrappers import response
 from shop.inventory.models import Products
 from flask_login import current_user, login_required
 from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, AddProductTypeForm, UnitChoices, \
-    AddUnitForm
+    AddUnitForm, ProductUpdateForm
 from shop import db
 from shop.inventory.utils import save_picture
 import os
@@ -25,6 +25,7 @@ def products():
     page = request.args.get('page', 1, type=int)
     products = Products.query.filter_by(user=current_user).paginate(page=page, per_page=5)
     form = SearchProductForm()
+    product_update_form = ProductUpdateForm()
     product_type_choices = ProductTypeChoices.query.filter_by(user=current_user)
     for product_type_choice in product_type_choices:
         temp = (product_type_choice.choices, product_type_choice.choices)
@@ -73,8 +74,22 @@ def products():
             form.search.data = search
         else:
             pass
+    
+    form_product_type_choices = []
+    form_unit_choices = []
+    product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
+    for product_type_choice in product_type_choices:
+        temp = (product_type_choice.choices, product_type_choice.choices)
+        form_product_type_choices.append(temp)
 
-    return render_template('products.html', products=products, form=form, search=search)
+    # initiates 'unit' choices from database
+    unit_choices = UnitChoices.query.filter(UnitChoices.user_id == current_user.id)
+    for unit_choice in unit_choices:
+        temp = (unit_choice.choices, unit_choice.choices)
+        form_unit_choices.append(temp)
+    product_update_form.unit.choices = form_unit_choices
+    product_update_form.p_type.choices = form_product_type_choices
+    return render_template('products.html', products=products, form=form, search=search, product_update_form=product_update_form)
 
 
 @inventory.route('/products/add_products', methods=['GET', 'POST'])
@@ -299,3 +314,10 @@ def edit_units():
             return 'true'
         except:
             return 'Something went wrong.'
+
+
+@inventory.route('/products/update_product', methods=['POST'])
+def update_product():
+    data = request.json
+    print(data['image'])
+    return "got it"

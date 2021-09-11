@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='products.css') }}">
+    <script src="{{ url_for('static', filename='js/inventory/sortable.js') }}"></script>
     <script src="{{ url_for('static', filename='js/inventory/products.js') }}"></script>
 {% endblock head %}
 {% block body %}
@@ -84,23 +85,100 @@
                   <td>{{ product.price }}</td>
                   <td style="font-size:x-large;text-decoration:none">
                     <!-- Edit modal -->
-                    <i class="fa fa-edit text-primary" data-bs-toggle="modal" data-bs-target="#edit{{ product.product_id }}Modal" style="cursor:pointer;"></i>
+                    <i class="fa fa-edit text-primary" data-bs-toggle="modal" data-bs-target="#edit{{ product.product_id }}Modal" style="cursor:pointer;" onclick="setSelectDefault('{{ product.id }}', '{{ product.p_type }}', '{{ product.unit }}')"></i>
 
                     <!-- Modal -->
                     <div class="modal fade modal-font" id="edit{{ product.product_id }}Modal" tabindex="-1" aria-labelledby="edit{{ product.product_id }}ModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
+                        <form name="update_product_form_{{ product.id }}" method="POST" onsubmit="return false" enctype="multipart/form-data">
+                          {{ product_update_form.hidden_tag() }}
                         <div class="modal-content bg-dark">
                           <div class="modal-header">
                             <h5 class="modal-title" id="edit{{ product.product_id }}ModalLabel">Update product ID: {{ product.product_id }}</h5>
                             <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
-                            ...
+                            <!-- Edit form here -->
+                              <div class="edit-form-col">
+                                <div class="edit-form-main">
+                                  <span class="form-group edit-form-child">
+                                    {{ product_update_form.name.label(class="form-control-label") }}
+                                    {% if product_update_form.name.errors %}
+                                        {{ product_update_form.name(class="form-control is-invalid", value=product.name) }}
+                                        <div class="invalid-feedback">
+                                            {% for error in product_update_form.name.errors %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ product_update_form.name(class="form-control", value=product.name) }}
+                                    {% endif %}
+                                  </span>
+                                  <span class="form-group edit-form-child">
+                                    {{ product_update_form.image.label(class="form-control-label") }}
+                                    {% if product_update_form.image.errors %}
+                                        {{ product_update_form.image(class="form-control is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in product_update_form.image.errors %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ product_update_form.image(class="form-control") }}
+                                    {% endif %}
+                                  </span>
+                                </div>
+                                <div class="edit-form-main">
+                                  <span class="form-group edit-form-child">
+                                    {{ product_update_form.p_type.label(class="form-control-label") }}
+                                    {% if product_update_form.p_type.errors %}
+                                        {{ product_update_form.p_type(class="form-control is-invalid", id="update_p_type_select_"+product.id|string) }}
+                                        <div class="invalid-feedback">
+                                            {% for error in product_update_form.p_type.errors %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ product_update_form.p_type(class="form-control", id="update_p_type_select_"+product.id|string) }}
+                                    {% endif %}
+                                  </span>
+                                  <span class="form-group edit-form-child">
+                                    {{ product_update_form.unit.label(class="form-control-label") }}
+                                    {% if product_update_form.unit.errors %}
+                                        {{ product_update_form.unit(class="form-control is-invalid", id="update_unit_select_"+product.id|string) }}
+                                        <div class="invalid-feedback">
+                                            {% for error in product_update_form.unit.errors %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ product_update_form.unit(class="form-control", id="update_unit_select_"+product.id|string) }}
+                                    {% endif %}
+                                  </span>
+                                  <span class="form-group edit-form-child">
+                                    {{ product_update_form.price.label(class="form-control-label") }}
+                                    {% if product_update_form.price.errors %}
+                                        {{ product_update_form.price(class="form-control is-invalid", value=product.price) }}
+                                        <div class="invalid-feedback">
+                                            {% for error in product_update_form.price.errors %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ product_update_form.price(class="form-control", value=product.price) }}
+                                    {% endif %}
+                                  </span>
+                                </div>
+                              </div>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                            <!--{{ product_update_form.submit_update_form(class='btn btn-danger', onclick="submitProductUpdateForm("+product.id|string+", )") }}-->
+                            <button type="submit" class='btn btn-danger' onclick="submitProductUpdateForm('{{ product.id }}', '{{ csrf_token() }}')">
+                              Update
+                            </button>
                           </div>
+                        </form>
                         </div>
                       </div>
                     </div>
