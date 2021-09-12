@@ -46,13 +46,13 @@
             <thead>
             <tbody>
               {% for product in products.items %}
-                <tr>
-                  <td>{{ product.product_id }}</td>
-                  <td>{{ product.name }}</td>
+                <tr id="table_row_{{ product.id }}">
+                  <td id="table_id_{{ product.id }}">{{ product.product_id }}</td>
+                  <td id="table_name_{{ product.id }}">{{ product.name }}</td>
                   <td>
                     <!-- Button trigger modal -->
                     <div data-bs-toggle="modal" data-bs-target="#div{{ product.product_id }}Modal">
-                      <img class="normal-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}" style="cursor:zoom-in;">
+                      <img id="table_image_{{ product.id }}" class="normal-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}" style="cursor:zoom-in;">
                     </div>
 
                     <!-- Modal -->
@@ -64,15 +64,15 @@
                             <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
-                            <img class="zoom-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}">
+                            <img id="table_image_modal_{{ product.id }}" class="zoom-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}">
                           </div>
                           <div class="modal-footer">
                             <div class="w-100">
                               <div class="modal-footer-cus">
-                                Price: {{ product.price }}
+                                Price: <span id="table_price_modal_span_{{ product.id }}">{{ product.price }}</span>
                               </div>
                               <div class="modal-footer-cus">
-                                Unit: {{ product.unit }}
+                                Unit: <span id="table_unit_modal_span_{{ product.id }}">{{ product.unit }}</span>
                               </div>
                             </div>
                           </div>
@@ -80,9 +80,9 @@
                       </div>
                     </div>
                   </td>
-                  <td>{{ product.p_type }}</td>
-                  <td>{{ product.unit }}</td>
-                  <td>{{ product.price }}</td>
+                  <td id="table_p_type_{{ product.id }}">{{ product.p_type }}</td>
+                  <td id="table_unit_{{ product.id }}">{{ product.unit }}</td>
+                  <td id="table_price_{{ product.id }}">{{ product.price }}</td>
                   <td style="font-size:x-large;text-decoration:none">
                     <!-- Edit modal -->
                     <i class="fa fa-edit text-primary" data-bs-toggle="modal" data-bs-target="#edit{{ product.product_id }}Modal" style="cursor:pointer;" onclick="setSelectDefault('{{ product.id }}', '{{ product.p_type }}', '{{ product.unit }}')"></i>
@@ -90,7 +90,7 @@
                     <!-- Modal -->
                     <div class="modal fade modal-font" id="edit{{ product.product_id }}Modal" tabindex="-1" aria-labelledby="edit{{ product.product_id }}ModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
-                        <form name="update_product_form_{{ product.id }}" method="POST" onsubmit="return false" enctype="multipart/form-data">
+                        <form name="update_product_form_{{ product.id }}" method="POST" onsubmit="return false">
                           {{ product_update_form.hidden_tag() }}
                         <div class="modal-content bg-dark">
                           <div class="modal-header">
@@ -172,9 +172,7 @@
                               </div>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <!--{{ product_update_form.submit_update_form(class='btn btn-danger', onclick="submitProductUpdateForm("+product.id|string+", )") }}-->
-                            <button type="submit" class='btn btn-danger' onclick="submitProductUpdateForm('{{ product.id }}', '{{ csrf_token() }}')">
+                            <button type="submit" data-bs-dismiss="modal" class='btn btn-danger' onclick="submitProductUpdateForm('{{ product.id }}', '{{ csrf_token() }}')">
                               Update
                             </button>
                           </div>
@@ -199,7 +197,7 @@
                             Are you sure you want to delete product ID: {{ product.product_id }}?
                           </div>
                           <div class="modal-footer">
-                            <a href="{{ url_for('inventory.delete_product', product_id=product.id) }}" class="btn btn-danger">Delete</a>
+                            <a href="{{ url_for('inventory.delete_product', product_id=product.id) }}" onclick="deleteProduct('{{ product.id }}')" class="btn btn-danger">Delete</a>
                             <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cancel</button>
                           </div>
                         </div>

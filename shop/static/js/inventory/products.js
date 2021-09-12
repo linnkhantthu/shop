@@ -2,26 +2,47 @@ function submitProductUpdateForm(product_id, csrf_token) {
     //var edit_data = document.forms.namedItem('edit_form_id'+id)
     var formDataToSubmit = document.forms.namedItem('update_product_form_'+product_id);
     var formdata = new FormData(formDataToSubmit);
+    formdata.append('product_id', parseInt(product_id));
     var http = new XMLHttpRequest();
     var url = "/products/update_product";
     http.open('POST', url, true);
-    http.setRequestHeader('Accept', 'application/json');
-    http.setRequestHeader('Content-Type', 'multipart/form-data');
-    //var params = 'product_id='+ product_id +'&value='+formdata.get('edit_input_'+id);
-    console.log(formdata.get('image'))
-    var object = {};
-    formdata.forEach(function(value, key){
-        console.log(key);
-        if(key == 'image'){object[key] = formdata.get('image')}
-        else{object[key] = value;}
-    });
-    var params = JSON.stringify(object);
-    console.log(params);
-    params['product_id'] = product_id;
+    //http.setRequestHeader('Content-Type', 'multipart/form-data');
+    //var params = 'name='+formdata.get('name')+'&'+'image='+formdata.get('image');
     http.setRequestHeader('X-CSRFToken', csrf_token);
-    http.send(params);
+    http.send(formdata);
     http.onload = function(){
-        data = http.responseText;
+        var data = JSON.parse(http.responseText);
+        var result = data['result'];
+        if(result.length != 0){
+            var result_str;
+            result.forEach(e => {
+                result_str += e + '\n';
+            });
+            alert(result_str);
+        }
+        else{
+            var table_name = document.getElementById('table_name_'+product_id);
+            var table_image = document.getElementById('table_image_'+product_id);
+            var table_type = document.getElementById('table_p_type_'+product_id);
+            var table_unit = document.getElementById('table_unit_'+product_id);
+            var table_price = document.getElementById('table_price_'+product_id);
+            var table_image_modal = document.getElementById('table_image_modal_'+product_id);
+            var table_price_modal_span = document.getElementById('table_price_modal_span_'+product_id);
+            var table_unit_modal_span = document.getElementById('table_unit_modal_span_'+product_id);
+            
+            table_name.innerHTML = formdata.get('name');
+            table_type.innerHTML = formdata.get('p_type');
+            table_unit.innerHTML = formdata.get('unit');
+            table_price.innerHTML = formdata.get('price');
+            table_price_modal_span.innerHTML = formdata.get('price');
+            table_unit_modal_span.innerHTML = formdata.get('unit');
+            
+            if(formdata.get('image').name != ''){
+                table_image.src = "/static/products_images/"+data['image_filename'];
+                table_image_modal.src = "/static/products_images/"+data['image_filename'];
+            }
+
+        }
     }
 }
 

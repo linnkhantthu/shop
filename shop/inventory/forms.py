@@ -62,11 +62,11 @@ class AddUnitForm(FlaskForm):
 
 class ProductUpdateForm(FlaskForm):
     product_id = IntegerField('ID')
-    name = StringField('Name', validators=[DataRequired()])
-    image = FileField('Image', validators=[FileAllowed(['jpg', 'png'], DataRequired())])
-    p_type = SelectField('Select product type', validators=[DataRequired()])
-    unit = SelectField('Select unit', validators=[DataRequired()])
-    price = IntegerField('Price', validators=[DataRequired()])
+    name = StringField('Name')
+    image = FileField('Image')
+    p_type = SelectField('Select product type')
+    unit = SelectField('Select unit')
+    price = IntegerField('Price')
     submit_update_form = SubmitField('Update')
 
     def validate_name(self, name, product_id):

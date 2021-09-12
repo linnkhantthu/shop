@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, current_app, request, jsonify
-from werkzeug.wrappers import response
+from flask import Blueprint, json, render_template, flash, redirect, url_for, current_app, request, jsonify
 from shop.inventory.models import Products
 from flask_login import current_user, login_required
 from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, AddProductTypeForm, UnitChoices, \
@@ -318,6 +317,62 @@ def edit_units():
 
 @inventory.route('/products/update_product', methods=['POST'])
 def update_product():
-    data = request.json
-    print(data['image'])
-    return "got it"
+    filename = ""
+    image_ext = ['.png', '.jpg', '.jpeg']
+    error = []
+    file = request.files # receive file
+    data = request.form # receive the rest data
+    
+    name = data['name']
+    p_type = data['p_type']
+    unit = data['unit']
+    price = data['price']
+    product_id = data['product_id']
+
+    if name == '' or p_type == '' or unit == '' or price == '':
+        error.append("NullError :: The inputs can't be empty.")
+
+    # query product by ID
+    product = Products.query.get_or_404(product_id)
+
+    # check error
+    # if user has the right to update
+    if product.user != current_user:
+        error.append("ValidationError :: You don't have the right permission to perform this action.")
+    
+    if file['image']:
+        image = file['image']
+        _, f_ext = os.path.splitext(image.filename)
+        print(f_ext)
+        if f_ext not in image_ext:
+            error.append(f'ImageFormatError ::Image format must be in {image_ext}')
+        
+
+    if len(error) == 0:
+        if file['image']:
+            image = file['image']
+            # delete existing product file
+            # get old product filename
+            path = os.path.join(current_app.root_path, 'static/products_images', product.image)
+            if os.path.exists(path):
+                os.remove(path)
+            new_filename = save_picture(image)
+            product.image = new_filename
+            filename = new_filename
+    
+    
+        if data:
+            if product.name != name:
+                check_product = Products.query.filter(Products.name == name, Products.user_id == current_user.id).first()
+                if not check_product:
+                    product.name = name
+            if product.p_type != p_type:
+                product.p_type = p_type
+            if product.unit != unit:
+                product.unit = unit
+            if product.price != price:
+                product.price = price
+        db.session.commit()
+        return jsonify({"result": error, "image_filename": filename})
+    else:
+        return jsonify({"result": error})
