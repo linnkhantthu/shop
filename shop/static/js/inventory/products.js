@@ -53,3 +53,28 @@ function setSelectDefault(product_id, product_type, product_unit) {
     var select_unit_field = document.getElementById("update_unit_select_"+product_id);
     select_unit_field.value = product_unit;
 }
+
+function deleteProduct(product_id) {
+    product_id = parseInt(product_id);
+    var http = new XMLHttpRequest();
+    var url = "/products/delete_test/"+product_id;
+    http.open('GET', url, true);
+    http.send();
+    http.onload = function(){
+        var data = JSON.parse(http.responseText);
+        if(data['status'] == true){
+            document.getElementById('flash-msg').innerHTML =
+                '<div class="alert alert-info">'+
+                    data['result'] +
+                '</div>';
+            var table_row = document.getElementById('table_row_'+product_id);
+            table_row.remove();
+        }
+        else{
+            document.getElementById('flash-msg').innerHTML =
+                '<div class="alert alert-danger">'+
+                    data['result'] +
+                '</div>';
+        }
+    }
+}

@@ -197,8 +197,8 @@
                             Are you sure you want to delete product ID: {{ product.product_id }}?
                           </div>
                           <div class="modal-footer">
-                            <a href="{{ url_for('inventory.delete_product', product_id=product.id) }}" onclick="deleteProduct('{{ product.id }}')" class="btn btn-danger">Delete</a>
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cancel</button>
+                            <!-- <a href="{{ url_for('inventory.delete_product', product_id=product.id) }}" onclick="deleteProduct('{{ product.id }}')" class="btn btn-danger">Delete</a> -->
+                            <button type="button" data-bs-dismiss="modal" onclick="deleteProduct('{{ product.id }}')" class="btn btn-danger">Delete</button>
                           </div>
                         </div>
                       </div>

@@ -189,6 +189,28 @@ def delete_product(product_id):
         return redirect(url_for('inventory.products'))
 
 
+@inventory.route('/products/delete_test/<int:product_id>')
+@login_required
+def delete_product_test(product_id):
+    product = Products.query.get_or_404(product_id)
+    if product and product.user == current_user:
+        # delete product image
+        image_path = os.path.join(current_app.root_path, f'static/products_images/', product.image)
+        print('HERE: ', image_path)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+            db.session.delete(product)
+            db.session.commit()
+            result = f'Product Deleted ID: {product.product_id}'
+            return jsonify({'status': True, 'result': result})
+        else:
+            result = f'Please try again later or Contact admin.'
+            jsonify({'status': False, 'result': result})
+    else:
+        result = f'There the product does not exist.';
+        return jsonify({'status': False, 'result': result})
+
+
 @inventory.route('/products/delete_product_type/', methods=['GET', 'POST'])
 def delete_ptype():
     response = {}
