@@ -24,9 +24,11 @@ def create_app(config_class=Config):
     from shop.main.routes import main
     from shop.user.routes import user
     from shop.inventory.routes import inventory
+    from shop.customers.routes import customer
 
     app.register_blueprint(main)
     app.register_blueprint(user)
     app.register_blueprint(inventory)
+    app.register_blueprint(customer)
 
     return app

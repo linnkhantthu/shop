@@ -5,52 +5,18 @@
 {% block body %}
     <main class="container">
         <div id="main-options">
+            {% if current_user.account_type == 'admin' %}
+                <span>
+                    <a href="{{ url_for('inventory.inventory_page') }}">
+                        <img src="{{ url_for('static', filename='images/inventory-img.png') }}" alt="images">
+                        <div class=".centered-text">Inventory</div>
+                    </a>
+                </span>
+            {% endif %}
             <span>
-                <a href="{{ url_for('inventory.inventory_page') }}">
-                    <img src="{{ url_for('static', filename='images/inventory-img.png') }}" alt="images">
-                    <div class=".centered-text">Inventory</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/demo.jpg') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
+                <a href="{{ url_for('customer.catalogue') }}">
+                    <img src="{{ url_for('static', filename='images/shop.png') }}" alt="images">
+                    <div class=".centered-text">Shop</div>
                 </a>
             </span>
         </div>

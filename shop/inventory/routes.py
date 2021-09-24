@@ -1,4 +1,4 @@
-from flask import Blueprint, json, render_template, flash, redirect, url_for, current_app, request, jsonify
+from flask import Blueprint, render_template, flash, redirect, url_for, current_app, request, jsonify, abort
 from shop.inventory.models import Products
 from flask_login import current_user, login_required
 from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, AddProductTypeForm, UnitChoices, \
@@ -13,12 +13,16 @@ inventory = Blueprint('inventory', __name__)
 @inventory.route('/inventory_page')
 @login_required
 def inventory_page():
+    if current_user.account_type != 'admin':
+        abort(403)
     return render_template('inventory.html')
 
 
 @inventory.route('/products', methods=['POST', 'GET'])
 @login_required
 def products():
+    if current_user.account_type != 'admin':
+        abort(403)
     form_product_type_choices = [(None, 'Select product type')]
     search = None
     page = request.args.get('page', 1, type=int)
@@ -76,13 +80,15 @@ def products():
     
     form_product_type_choices = []
     form_unit_choices = []
-    product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
+    # product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
+    product_type_choices = ProductTypeChoices.query.all()
     for product_type_choice in product_type_choices:
         temp = (product_type_choice.choices, product_type_choice.choices)
         form_product_type_choices.append(temp)
 
     # initiates 'unit' choices from database
-    unit_choices = UnitChoices.query.filter(UnitChoices.user_id == current_user.id)
+    # unit_choices = UnitChoices.query.filter(UnitChoices.user_id == current_user.id)
+    unit_choices = UnitChoices.query.filter()
     for unit_choice in unit_choices:
         temp = (unit_choice.choices, unit_choice.choices)
         form_unit_choices.append(temp)
@@ -94,6 +100,8 @@ def products():
 @inventory.route('/products/add_products', methods=['GET', 'POST'])
 @login_required
 def add_products():
+    if current_user.account_type != 'admin':
+        abort(403)
     # choices for product type and unit
     form_product_type_choices = []
     form_unit_choices = []
@@ -106,13 +114,15 @@ def add_products():
     last_product = Products.query.order_by(Products.user_id == current_user.id, Products.product_id.desc()).first()
 
     # initiates 'product type' choices from database
-    product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
+    # product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
+    product_type_choices = ProductTypeChoices.query.all()    
     for product_type_choice in product_type_choices:
         temp = (product_type_choice.choices, product_type_choice.choices)
         form_product_type_choices.append(temp)
 
     # initiates 'unit' choices from database
-    unit_choices = UnitChoices.query.filter(UnitChoices.user_id == current_user.id)
+    # unit_choices = UnitChoices.query.filter(UnitChoices.user_id == current_user.id)
+    unit_choices = UnitChoices.query.all()
     for unit_choice in unit_choices:
         temp = (unit_choice.choices, unit_choice.choices)
         form_unit_choices.append(temp)
@@ -143,18 +153,26 @@ def add_products():
 
     # if product type form got submitted and validated
     if p_type_form.pt_submit.data and p_type_form.validate_on_submit():
-        prod_type_to_commit = ProductTypeChoices(choices=p_type_form.product_type.data, user=current_user)
-        db.session.add(prod_type_to_commit)
-        db.session.commit()
-        flash(f'Added product type: {prod_type_to_commit.choices}', 'success')
+        pt_exist = ProductTypeChoices.query.filter(ProductTypeChoices.choices == p_type_form.product_type.data).first()
+        if not pt_exist:
+            prod_type_to_commit = ProductTypeChoices(choices=p_type_form.product_type.data, user=current_user)
+            db.session.add(prod_type_to_commit)
+            db.session.commit()
+            flash(f'Added product type: {prod_type_to_commit.choices}', 'success')
+        else:
+            flash(f'Product type: {p_type_form.product_type.data} already exist.', 'info')
         return redirect(url_for('inventory.add_products'))
 
     # if Unit form got submitted and validated
     if unitForm.unit_submit.data and unitForm.validate_on_submit():
-        unit_to_commit = UnitChoices(choices=unitForm.unit.data, user=current_user)
-        db.session.add(unit_to_commit)
-        db.session.commit()
-        flash(f'Added unit: {unit_to_commit.choices}', 'success')
+        unit_exist = UnitChoices.query.filter(UnitChoices.choices == unitForm.unit.data).first()
+        if not unit_exist:
+            unit_to_commit = UnitChoices(choices=unitForm.unit.data, user=current_user)
+            db.session.add(unit_to_commit)
+            db.session.commit()
+            flash(f'Added unit: {unit_to_commit.choices}', 'success')
+        else:
+            flash(f'Unit: {unitForm.unit.data} already exist.', 'info')
         return redirect(url_for('inventory.add_products'))
 
     # guessing next product ID
@@ -170,6 +188,8 @@ def add_products():
 @inventory.route('/products/delete/<int:product_id>')
 @login_required
 def delete_product(product_id):
+    if current_user.account_type != 'admin':
+        abort(403)
     product = Products.query.get_or_404(product_id)
     if product and product.user == current_user:
         # delete product image
@@ -192,6 +212,8 @@ def delete_product(product_id):
 @inventory.route('/products/delete_test/<int:product_id>')
 @login_required
 def delete_product_test(product_id):
+    if current_user.account_type != 'admin':
+        abort(403)
     product = Products.query.get_or_404(product_id)
     if product and product.user == current_user:
         # delete product image
@@ -207,12 +229,15 @@ def delete_product_test(product_id):
             result = f'Please try again later or Contact admin.'
             jsonify({'status': False, 'result': result})
     else:
-        result = f'There the product does not exist.';
+        result = f'There the product does not exist.'
         return jsonify({'status': False, 'result': result})
 
 
 @inventory.route('/products/delete_product_type/', methods=['GET', 'POST'])
+@login_required
 def delete_ptype():
+    if current_user.account_type != 'admin':
+        abort(403)
     response = {}
     response_list = []
     if request.method == 'POST':
@@ -242,7 +267,10 @@ def delete_ptype():
 
 
 @inventory.route('/products/edit_product_type', methods=['POST'])
+@login_required
 def edit_products():
+    if current_user.account_type != 'admin':
+        abort(403)
     if request.method == 'POST':
         try:
             choice_id = request.form['id']
@@ -275,7 +303,10 @@ def edit_products():
 
 
 @inventory.route('/products/delete_unit/', methods=['GET', 'POST'])
+@login_required
 def delete_unit():
+    if current_user.account_type != 'admin':
+        abort(403)
     response = {}
     response_list = []
     if request.method == 'POST':
@@ -305,7 +336,10 @@ def delete_unit():
 
 
 @inventory.route('/products/edit_unit', methods=['POST'])
+@login_required
 def edit_units():
+    if current_user.account_type != 'admin':
+        abort(403)
     if request.method == 'POST':
         try:
             choice_id = request.form['id']
@@ -338,9 +372,12 @@ def edit_units():
 
 
 @inventory.route('/products/update_product', methods=['POST'])
+@login_required
 def update_product():
+    if current_user.account_type != 'admin':
+        abort(403)
     filename = ""
-    image_ext = ['.png', '.jpg', '.jpeg']
+    image_ext = ['.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG']
     error = []
     file = request.files # receive file
     data = request.form # receive the rest data

@@ -1,5 +1,5 @@
 from shop.user.forms import LoginForm, RegisterationForm
-from flask import Blueprint, render_template, flash, url_for, redirect, abort, session
+from flask import Blueprint, render_template, flash, url_for, redirect, abort, session, request
 from flask_login import current_user, login_user, login_required, logout_user
 from shop import db, bcrypt
 from shop.user.models import User
@@ -28,13 +28,17 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.main_page'))
+    next = request.args.get('next')
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             flash(f'Logged in as {current_user.username}', 'success')
-            return redirect(url_for('main.main_page'))
+            if next:
+                return redirect(next)
+            else:
+                return redirect(url_for('main.main_page'))
         else:
             flash('Incorrect username or password, please try again.', 'danger')
             return redirect(url_for('user.login'))

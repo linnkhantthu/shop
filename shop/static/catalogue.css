@@ -1,0 +1,225 @@
+.catalogue{
+    list-style: none;
+    display: flex;
+    padding: 5px;
+    height: 300px;
+    max-height: 300px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+}
+.catalogue::-webkit-scrollbar{
+  display:none;
+}
+.catalogue > li{
+    background-color: #212529;
+    border-radius: 2px;
+    display: flex;
+    height: 250px; 
+    min-width: 200px;
+    max-height: 250px;
+    flex-direction: column;
+    margin: 5px;
+}
+.content {
+  background-color: tomato;
+  /* border: 1px solid #CCCCCC; */
+  height: 300px;
+  min-width: 200px;
+  max-height: 0px;
+  line-height: 400px;
+  /* margin: 50px auto; */
+  overflow: visible;
+  position: relative;
+  width: 80%;
+}
+.catalogue > li > img{
+  cursor: pointer;
+  height: 200px;
+  min-width: 200px;
+  max-height: 200px;
+}
+.corner-link {
+  -webkit-transform: rotate(-45deg);  
+     -moz-transform: rotate(-45deg); 
+      -ms-transform: rotate(-45deg); 
+       -o-transform: rotate(-45deg); 
+          transform: rotate(-45deg);
+  -webkit-transform-origin: 0 0;
+     -moz-transform-origin: 0 0;
+      -ms-transform-origin: 0 0;
+       -o-transform-origin: 0 0;
+          transform-origin: 0 0;
+    right: 0;
+    top: 0;
+    display: block;
+    height: 150px;
+    position: absolute;
+    width: 100px;
+    z-index: 3;
+}
+.corner-text-wrapper {
+  -webkit-transform: rotate(45deg);  
+     -moz-transform: rotate(45deg);  
+      -ms-transform: rotate(45deg);  
+       -o-transform: rotate(45deg);  
+          transform: rotate(45deg);
+    clip: rect(0px, 141.421px, 70.7107px, 0px);
+    height: 141.421px;
+    position: absolute;
+    right: -20.7107px;
+    top: -20.7107px;
+    width: 141.421px;
+    z-index: 1;
+}
+.corner-text {
+  color: #212529;
+ -webkit-transform: rotate(-45deg);  
+     -moz-transform: rotate(-45deg); 
+      -ms-transform: rotate(-45deg); 
+       -o-transform: rotate(-45deg); 
+          transform: rotate(-45deg);
+    left: 20px;
+    top: 20px;
+    background-color: lightskyblue;
+    display: block;
+    height: 100px;
+    position: absolute;
+    width: 100px;
+    z-index: 2;
+}
+.corner-text span {
+  position: relative;
+  padding: 5px;
+  transform: rotate(45deg);
+  font-family: "HelveticaNeue-CondensedBold", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 700;
+  top: -170px;
+  left: 10px;
+  display: block;
+  text-align: center;
+}
+.scroll{
+  display: flex;
+}
+.scroll > span {
+  opacity: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+}
+.scroll > span > i{
+  background-color: lightskyblue;
+  border-radius: 100%;
+  color: #212529;
+  margin-bottom: 25px;
+  padding: 10px;
+  cursor: pointer;
+}
+.see-more{
+  display: flex;
+  justify-content: center;
+}
+.see-more > span{
+  background-color: #363b406b;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100%;
+}
+.see-more > span a{
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-decoration: none;
+}
+.product-name{
+  display: flex;
+  height: 50px;
+  justify-content: flex-start;
+}
+.product-name > span{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.catalogue-links{
+  padding: 15px;
+}
+.addToCart{
+  background-color:tomato;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 10px;
+}
+.zoom-img{
+  height: 100%;
+  width: 100%;
+}
+@media screen and (max-width:700px) {
+  .corner-text{
+    overflow-x: hidden;
+  }
+  .catalogue{
+    padding: 2px;
+    height: 200px;
+    max-height: 200px;
+}
+.catalogue > li{
+  height: 200px;
+  min-width: 150px;
+  max-height: 200px;
+  margin: 2px;
+}
+.content {
+  /* border: 1px solid #CCCCCC; */
+  height: 150px;
+  min-width: 100px;
+  max-height: 0px;
+  line-height: 150px;
+}
+.catalogue > li > img{
+  margin-top: 0px;
+  height: 150px;
+  min-width: 100px;
+  max-height: 150px;
+}
+.corner-link {
+    right: -10px;
+    top: 10px;
+    height: 75px;
+    width: 50px;
+}
+.corner-text-wrapper {
+    clip: rect(0px, 70.7105px, 35.35535px, 0px);
+    height: 70.7105px;
+    right: -40.35535px;
+    top: -10.35535px;
+    width: 70.7105px;
+}
+.corner-text {
+    left: 10px;
+    top: 10px;
+    height: 50px;
+    width: 50px;
+}
+.corner-text span {
+  width: 200px;
+  font-size: 9px;
+  padding: 2px;
+  top: -57px;
+  left: -70px;
+}
+.product-name{
+  font-size: 10px;
+}
+.scroll > span > i{
+  border-radius: 100%;
+  color: #212529;
+  font-size: 10px;
+  margin-bottom: 25px;
+  padding: 5px;
+  cursor: pointer;
+}
+}

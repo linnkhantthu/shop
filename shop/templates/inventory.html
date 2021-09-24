@@ -4,6 +4,12 @@
 {% endblock head %}
 {% block body %}
     <main class="container">
+        <!-- Header -->
+        <div class="div-header">
+            <a class="link-design back-icon" href="{{ url_for('main.main_page') }}">
+              <i class="fa fa-angle-left"></i> Back
+            </a>
+        </div>
         <div id="main-options">
             <span>
                 <a href="{{ url_for('inventory.products') }}">
@@ -14,31 +20,7 @@
             <span>
                 <a href="#">
                     <img src="{{ url_for('static', filename='images/products.png') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/products.png') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/products.png') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/products.png') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/products.png') }}" alt="images">
-                    <div class=".centered-text">Demo Text 1</div>
+                    <div class=".centered-text">Products</div>
                 </a>
             </span>
         </div>

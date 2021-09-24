@@ -138,8 +138,10 @@
                         {% for product_type_choice in product_type_choices %}
                             <div id="div{{ product_type_choice.id }}">
                                 <span id="span_pt_choices{{ product_type_choice.id }}">{{ product_type_choice.choices }}</span>
-                                <i onclick="choices_trash('div{{ product_type_choice.id }}')" style="float:right;font-size:x-large;" class="fa fa-trash text-danger"></i>
-                                <i id="edit_icon_id{{ product_type_choice.id }}" onclick="choices_edit('div{{ product_type_choice.id }}', 'span_pt_choices{{ product_type_choice.id }}', '/products/edit_product_type',' {{csrf_token()}}')" style="float:right;font-size:x-large;margin-right:2px;" class="fa fa-edit text-white"></i>
+                                {% if current_user == product_type_choice.user %}
+                                    <i onclick="choices_trash('div{{ product_type_choice.id }}')" style="float:right;font-size:x-large;cursor:pointer;" class="fa fa-trash text-danger"></i>
+                                    <i id="edit_icon_id{{ product_type_choice.id }}" onclick="choices_edit('div{{ product_type_choice.id }}', 'span_pt_choices{{ product_type_choice.id }}', '/products/edit_product_type',' {{csrf_token()}}')" style="float:right;font-size:x-large;margin-right:2px;cursor:pointer;" class="fa fa-edit text-white"></i>
+                                {% endif %}
                                 <hr>
                             </div>
                         {% endfor %}
@@ -189,8 +191,10 @@
                         {% for unit_choice in unit_choices %}
                             <div id="unit_div{{ unit_choice.id }}">
                                 <span id="span_unit_choices{{ unit_choice.id }}">{{ unit_choice.choices }}</span>
-                                <i onclick="unit_choices_trash('unit_div{{ unit_choice.id }}')" style="float:right;font-size:x-large;" class="fa fa-trash text-danger"></i>
-                                <i id="unit_edit_icon_id{{ unit_choice.id }}" onclick="unit_choices_edit('unit_div{{ unit_choice.id }}', 'span_unit_choices{{ unit_choice.id }}', '/products/edit_unit',' {{csrf_token()}}')" style="float:right;font-size:x-large;margin-right:2px;" class="fa fa-edit text-white"></i>
+                                {% if current_user == unit_choice.user %}
+                                    <i onclick="unit_choices_trash('unit_div{{ unit_choice.id }}')" style="float:right;font-size:x-large; cursor:pointer;" class="fa fa-trash text-danger"></i>
+                                    <i id="unit_edit_icon_id{{ unit_choice.id }}" onclick="unit_choices_edit('unit_div{{ unit_choice.id }}', 'span_unit_choices{{ unit_choice.id }}', '/products/edit_unit',' {{csrf_token()}}')" style="float:right;font-size:x-large;margin-right:2px;cursor:pointer;" class="fa fa-edit text-white"></i>
+                                {% endif %}
                                 <hr>
                             </div>
                         {% endfor %}

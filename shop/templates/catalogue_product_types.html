@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='catalogue_product_types.css') }}">
+{% endblock head %}
+{% block body %}
+    <!-- Catalogue Links -->
+    <a class="link-design back-icon" href="{{ url_for('customer.catalogue') }}" >
+        <i class="fa fa-angle-left"></i>
+        Back
+    </a>
+
+    <!-- Latest Products -->
+    <fieldset class="main">
+        <legend>{{ product_type }}</legend>
+        <div class="scroll">
+            <ul class="catalogue">
+                {% for product in products %}
+                    <li>
+                        <div class="content">
+                            <a href="#" class="corner-link"></a>
+                            <div class="corner-text-wrapper">
+                                <div class="corner-text">
+                                <span>{{ product.price }} Ks</span>
+                                </div>
+                            </div>
+                        </div>
+                        <img 
+                        src="{{ url_for('static', filename='products_images/'+product.image) }}"
+                        alt="" data-bs-toggle="modal" 
+                        data-bs-target="#div{{ product.product_id }}Modal">
+                        <span class="product-name">
+                            <span>
+                                <span>{{ product.name }}</span>
+                                <small class="ownerName">By: {{ product.user.username }}</small>
+                            </span>
+                            <span title="Add to cart" class="addToCart">+</span>
+                        </span>
+                    </li>
+                    <!-- Modal -->
+                    <div class="modal fade modal-font" id="div{{ product.product_id }}Modal" tabindex="-1" aria-labelledby="div{{ product.product_id }}ModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content bg-dark">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="div{{ product.product_id }}ModalLabel">{{ product.name }}(ID: {{ product.product_id }})</h5>
+                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img class="zoom-img" src="{{ url_for('static', filename='products_images/'+product.image) }}" alt="">
+                            </div>
+                            <div class="modal-footer">
+                            <div class="w-100">
+                                <div class="modal-footer-cus">
+                                Price: <span id="table_price_modal_span_{{ product.id }}">{{ product.price }}</span>
+                                </div>
+                                <div class="modal-footer-cus">
+                                Unit: <span id="table_unit_modal_span_{{ product.id }}">{{ product.unit }}</span>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>    
+                {% endfor %}
+            </ul>
+        </div>
+    </fieldset>
+{% endblock body %}

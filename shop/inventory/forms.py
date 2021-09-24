@@ -13,7 +13,7 @@ from flask import flash
 class ProductsForm(FlaskForm):
     ID = IntegerField('ID', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
-    image = FileField('Image', validators=[FileAllowed(['jpg', 'png'], DataRequired())])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'jpeg', 'JPG', 'PNG', 'JPEG'], DataRequired())])
     p_type = SelectField('Select product type', validators=[DataRequired()])
     unit = SelectField('Select unit', validators=[DataRequired()])
     price = IntegerField('Price', validators=[DataRequired()])
@@ -40,24 +40,25 @@ class AddProductTypeForm(FlaskForm):
     product_type = StringField('Product Type', validators=[DataRequired()])
     pt_submit = SubmitField('Add')
 
-    def validate_product_type(self, product_type):
-        pt_exist = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id,
-                                                   ProductTypeChoices.choices == product_type.data).first()
-        if pt_exist:
-            flash('Product already exist.', 'danger')
-            raise ValidationError("Product already exist.")
+    # def validate_product_type(self, product_type):
+    #     # pt_exist = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id,
+    #     #                                            ProductTypeChoices.choices == product_type.data).first()
+    #     pt_exist = ProductTypeChoices.query.filter(ProductTypeChoices.choices == product_type.data).first()
+    #     if pt_exist:
+    #         raise ValidationError("Product type already exist.")
 
 
 class AddUnitForm(FlaskForm):
     unit = StringField('Unit', validators=[DataRequired()])
     unit_submit = SubmitField('Add')
 
-    def validate_product_type(self, unit):
-        unit_exist = UnitChoices.query.filter(UnitChoices.user_id == current_user.id,
-                                              UnitChoices.choices == unit.data).first()
-        if unit_exist:
-            flash('Unit already exist.', 'danger')
-            raise ValidationError("Unit already exist.")
+    # def validate_product_type(self, unit):
+    #     # unit_exist = UnitChoices.query.filter(UnitChoices.user_id == current_user.id,
+    #     #                                       UnitChoices.choices == unit.data).first()
+    #     unit_exist = UnitChoices.query.filter(UnitChoices.choices == unit.data).first()
+    #     if unit_exist:
+    #         print("EXIST")
+    #         raise ValidationError("Unit already exist.")
 
 
 class ProductUpdateForm(FlaskForm):
