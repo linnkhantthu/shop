@@ -1,8 +1,8 @@
 from itertools import product
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms.fields.core import StringField, SelectField, FloatField
-from wtforms.fields.html5 import IntegerField, SearchField
+from wtforms.fields.simple import StringField
+from wtforms.fields import IntegerField, SelectField
 from wtforms.fields import SubmitField
 from wtforms.validators import DataRequired, ValidationError
 from shop.inventory.models import Products, ProductTypeChoices, UnitChoices
@@ -13,19 +13,22 @@ from flask import flash
 class ProductsForm(FlaskForm):
     ID = IntegerField('ID', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
-    image = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'jpeg', 'JPG', 'PNG', 'JPEG'], DataRequired())])
+    image = FileField('Image', validators=[FileAllowed(
+        ['jpg', 'png', 'jpeg', 'JPG', 'PNG', 'JPEG'], DataRequired())])
     p_type = SelectField('Select product type', validators=[DataRequired()])
     unit = SelectField('Select unit', validators=[DataRequired()])
     price = IntegerField('Price', validators=[DataRequired()])
     submit = SubmitField('Add')
 
     def validate_ID(self, ID):
-        product = Products.query.filter(Products.product_id == ID.data, Products.user_id == current_user.id).first()
+        product = Products.query.filter(
+            Products.product_id == ID.data, Products.user_id == current_user.id).first()
 
         if product:
             last_product = Products.query.order_by(Products.user_id == current_user.id,
                                                    Products.product_id.desc()).first()
-            raise ValidationError(f"This ID is already exist. Recommended: {last_product.product_id + 1}")
+            raise ValidationError(
+                f"This ID is already exist. Recommended: {last_product.product_id + 1}")
 
 
 class SearchProductForm(FlaskForm):
@@ -71,6 +74,7 @@ class ProductUpdateForm(FlaskForm):
     submit_update_form = SubmitField('Update')
 
     def validate_name(self, name, product_id):
-        product = Products.query.filter(Products.name == name, Products.user_id == current_user.id, Products.id != product_id).first()
+        product = Products.query.filter(
+            Products.name == name, Products.user_id == current_user.id, Products.id != product_id).first()
         if product:
             raise ValidationError("Product name already exist.")
