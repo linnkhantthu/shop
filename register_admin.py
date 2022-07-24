@@ -11,16 +11,19 @@ if pass_code == app.config.get('PASS_CODE'):
     confirm_password = input("Confirm password: ")
     if username and email and password and confirm_password == password:
         with app.app_context():
-            queried_user_by_username = User.query.filter_by(username=username).first()
+            queried_user_by_username = User.query.filter_by(
+                username=username).first()
             queried_user_by_email = User.query.filter_by(email=email).first()
         if queried_user_by_username:
             print("Username already exists.")
         elif queried_user_by_email:
             print("Email already exists.")
         else:
-            hashed_password = bcrypt.generate_password_hash(password)
+            hashed_password = bcrypt.generate_password_hash(
+                password).decode('utf-8')
             print('- Hashed password')
-            user = User(username=username, email=email, password=hashed_password, account_type='admin')
+            user = User(username=username, email=email,
+                        password=hashed_password, account_type='admin')
             print('- Collected data, ready to comitt')
             ready = input('Confirm to commit[y/n]: ')
             if ready == 'y':
@@ -34,6 +37,3 @@ if pass_code == app.config.get('PASS_CODE'):
         print("All inputs can't be empty")
 else:
     print("Passcode incorrect")
-
-
-
