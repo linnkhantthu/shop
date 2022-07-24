@@ -6,6 +6,9 @@ class ProductTypeChoices(db.Model):
     choices = db.Column(db.String(20), unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+    def __repr__(self):
+        return f'<ProductTypeChoices: {self.choices}'
+
 
 class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,8 +23,14 @@ class Products(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     p_type = db.Column(db.String(20), nullable=False)
 
+    def __repr__(self):
+        return f'<Products: {self.name}'
+
 
 class UnitChoices(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     choices = db.Column(db.String(20), unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<UnitChoices: {self.choices}'
