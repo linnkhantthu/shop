@@ -21,15 +21,19 @@ def inventory_page():
 @inventory.route('/products', methods=['POST', 'GET'])
 @login_required
 def products():
+    # Check if the user is Admin
     if current_user.account_type != 'admin':
         abort(403)
+
     form_product_type_choices = [(None, 'Select product type')]
     search = None
     page = request.args.get('page', 1, type=int)
-    products = Products.query.filter_by(user=current_user).paginate(page=page, per_page=5)
+    products = Products.query.filter_by(
+        user=current_user).paginate(page=page, per_page=5)
     form = SearchProductForm()
     product_update_form = ProductUpdateForm()
-    product_type_choices = ProductTypeChoices.query.filter_by(user=current_user)
+    product_type_choices = ProductTypeChoices.query.filter_by(
+        user=current_user)
     for product_type_choice in product_type_choices:
         temp = (product_type_choice.choices, product_type_choice.choices)
         form_product_type_choices.append(temp)
@@ -77,7 +81,7 @@ def products():
             form.search.data = search
         else:
             pass
-    
+
     form_product_type_choices = []
     form_unit_choices = []
     # product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
@@ -106,16 +110,17 @@ def add_products():
     form_product_type_choices = []
     form_unit_choices = []
 
-    form = ProductsForm()  # product form
-    p_type_form = AddProductTypeForm()  # form to add product type
-    unitForm = AddUnitForm()
+    form = ProductsForm()  # Product Form
+    p_type_form = AddProductTypeForm()  # Product Type Form
+    unitForm = AddUnitForm()  # Unit Form
 
     # get last product To guess what the next product ID would be
-    last_product = Products.query.order_by(Products.user_id == current_user.id, Products.product_id.desc()).first()
+    last_product = Products.query.order_by(
+        Products.user_id == current_user.id, Products.product_id.desc()).first()
 
     # initiates 'product type' choices from database
     # product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
-    product_type_choices = ProductTypeChoices.query.all()    
+    product_type_choices = ProductTypeChoices.query.all()
     for product_type_choice in product_type_choices:
         temp = (product_type_choice.choices, product_type_choice.choices)
         form_product_type_choices.append(temp)
@@ -131,43 +136,54 @@ def add_products():
 
     # if ProductForm is submitted and passes validation
     if form.submit.data and form.validate_on_submit():
-        if form.image.data is None:  # check file choose or not
-            flash('Please select product image.', 'danger')
-            return redirect(url_for('inventory.add_products'))
+        # if form.image.data is None:  # check file choose or not
+        #     flash('Please select product image.', 'danger')
+        #     return redirect(url_for('inventory.add_products'))
+        image_file = 'favicon.ico'
+        if form.image.data != None:
+            image_file = save_picture(form.image.data)
 
         # if the chosen product type not existed in the database?
-        prod_type = ProductTypeChoices.query.filter_by(choices=form.p_type.data)
+        prod_type = ProductTypeChoices.query.filter_by(
+            choices=form.p_type.data)
         if not prod_type:
             flash('Please select a valid product type.', 'danger')
             return redirect(url_for('inventory.add_products'))
-        image_file = save_picture(form.image.data)
-        p_type = ProductTypeChoices.query.filter_by(choices=form.p_type.data).first()
+        p_type = ProductTypeChoices.query.filter_by(
+            choices=form.p_type.data).first()
         product = Products(product_id=form.ID.data, name=form.name.data, image=image_file, p_type=p_type.choices,
                            unit=form.unit.data, price=form.price.data, user=current_user)
         db.session.add(product)
         db.session.commit()
         product = Products.query.filter(Products.product_id == form.ID.data,
                                         Products.user_id == current_user.id).first()
-        flash(f'Product: {product.product_id}, Name: {product.name} added.', 'success')
+        flash(
+            f'Product: {product.product_id}, Name: {product.name} added.', 'success')
         return redirect(url_for('inventory.add_products'))
 
     # if product type form got submitted and validated
     if p_type_form.pt_submit.data and p_type_form.validate_on_submit():
-        pt_exist = ProductTypeChoices.query.filter(ProductTypeChoices.choices == p_type_form.product_type.data).first()
+        pt_exist = ProductTypeChoices.query.filter(
+            ProductTypeChoices.choices == p_type_form.product_type.data).first()
         if not pt_exist:
-            prod_type_to_commit = ProductTypeChoices(choices=p_type_form.product_type.data, user=current_user)
+            prod_type_to_commit = ProductTypeChoices(
+                choices=p_type_form.product_type.data, user=current_user)
             db.session.add(prod_type_to_commit)
             db.session.commit()
-            flash(f'Added product type: {prod_type_to_commit.choices}', 'success')
+            flash(
+                f'Added product type: {prod_type_to_commit.choices}', 'success')
         else:
-            flash(f'Product type: {p_type_form.product_type.data} already exist.', 'info')
+            flash(
+                f'Product type: {p_type_form.product_type.data} already exist.', 'info')
         return redirect(url_for('inventory.add_products'))
 
     # if Unit form got submitted and validated
     if unitForm.unit_submit.data and unitForm.validate_on_submit():
-        unit_exist = UnitChoices.query.filter(UnitChoices.choices == unitForm.unit.data).first()
+        unit_exist = UnitChoices.query.filter(
+            UnitChoices.choices == unitForm.unit.data).first()
         if not unit_exist:
-            unit_to_commit = UnitChoices(choices=unitForm.unit.data, user=current_user)
+            unit_to_commit = UnitChoices(
+                choices=unitForm.unit.data, user=current_user)
             db.session.add(unit_to_commit)
             db.session.commit()
             flash(f'Added unit: {unit_to_commit.choices}', 'success')
@@ -193,7 +209,8 @@ def delete_product(product_id):
     product = Products.query.get_or_404(product_id)
     if product and product.user == current_user:
         # delete product image
-        image_path = os.path.join(current_app.root_path, f'static/products_images/', product.image)
+        image_path = os.path.join(
+            current_app.root_path, f'static/products_images/', product.image)
         print('HERE: ', image_path)
         if os.path.exists(image_path):
             os.remove(image_path)
@@ -217,7 +234,8 @@ def delete_product_test(product_id):
     product = Products.query.get_or_404(product_id)
     if product and product.user == current_user:
         # delete product image
-        image_path = os.path.join(current_app.root_path, f'static/products_images/', product.image)
+        image_path = os.path.join(
+            current_app.root_path, f'static/products_images/', product.image)
         print('HERE: ', image_path)
         if os.path.exists(image_path):
             os.remove(image_path)
@@ -281,7 +299,8 @@ def edit_products():
 
             if choice_data == "":
                 return "The input can't be empty."
-            pt_choice = ProductTypeChoices.query.get_or_404(choice_id)  # using id
+            pt_choice = ProductTypeChoices.query.get_or_404(
+                choice_id)  # using id
             pt_choice_data = ProductTypeChoices.query.filter(ProductTypeChoices.choices == choice_data,
                                                              ProductTypeChoices.id != choice_id,
                                                              ProductTypeChoices.user_id == current_user.id).first()
@@ -289,7 +308,8 @@ def edit_products():
                 return 'You are not authorised for this action.'
             if pt_choice_data:
                 return 'Product type already exist.'
-            products_ = Products.query.filter_by(p_type=pt_choice.choices, user=current_user)
+            products_ = Products.query.filter_by(
+                p_type=pt_choice.choices, user=current_user)
             pt_choice.choices = choice_data
             db.session.commit()
 
@@ -358,7 +378,8 @@ def edit_units():
                 return 'You are not authorised for this action.'
             if unit_choice_data:
                 return 'Unit already exist.'
-            products_ = Products.query.filter_by(unit=unit_choice.choices, user=current_user)
+            products_ = Products.query.filter_by(
+                unit=unit_choice.choices, user=current_user)
             unit_choice.choices = choice_data
             db.session.commit()
 
@@ -379,9 +400,9 @@ def update_product():
     filename = ""
     image_ext = ['.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG']
     error = []
-    file = request.files # receive file
-    data = request.form # receive the rest data
-    
+    file = request.files  # receive file
+    data = request.form  # receive the rest data
+
     name = data['name']
     p_type = data['p_type']
     unit = data['unit']
@@ -397,32 +418,34 @@ def update_product():
     # check error
     # if user has the right to update
     if product.user != current_user:
-        error.append("ValidationError :: You don't have the right permission to perform this action.")
-    
+        error.append(
+            "ValidationError :: You don't have the right permission to perform this action.")
+
     if file['image']:
         image = file['image']
         _, f_ext = os.path.splitext(image.filename)
         print(f_ext)
         if f_ext not in image_ext:
-            error.append(f'ImageFormatError ::Image format must be in {image_ext}')
-        
+            error.append(
+                f'ImageFormatError ::Image format must be in {image_ext}')
 
     if len(error) == 0:
         if file['image']:
             image = file['image']
             # delete existing product file
             # get old product filename
-            path = os.path.join(current_app.root_path, 'static/products_images', product.image)
+            path = os.path.join(current_app.root_path,
+                                'static/products_images', product.image)
             if os.path.exists(path):
                 os.remove(path)
             new_filename = save_picture(image)
             product.image = new_filename
             filename = new_filename
-    
-    
+
         if data:
             if product.name != name:
-                check_product = Products.query.filter(Products.name == name, Products.user_id == current_user.id).first()
+                check_product = Products.query.filter(
+                    Products.name == name, Products.user_id == current_user.id).first()
                 if not check_product:
                     product.name = name
             if product.p_type != p_type:

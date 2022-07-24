@@ -52,7 +52,7 @@
                   <td>
                     <!-- Button trigger modal -->
                     <div data-bs-toggle="modal" data-bs-target="#div{{ product.product_id }}Modal">
-                      <img id="table_image_{{ product.id }}" class="normal-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}" style="cursor:zoom-in;">
+                      <img id="table_image_{{ product.id }}" class="normal-img" src="{{ url_for('static', filename='' + product.image ) }}" style="cursor:zoom-in;">
                     </div>
 
                     <!-- Modal -->
@@ -64,7 +64,7 @@
                             <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
-                            <img id="table_image_modal_{{ product.id }}" class="zoom-img" src="{{ url_for('static', filename='products_images/' + product.image ) }}">
+                            <img id="table_image_modal_{{ product.id }}" class="zoom-img" src="{{ url_for('static', filename='' + product.image ) }}">
                           </div>
                           <div class="modal-footer">
                             <div class="w-100">

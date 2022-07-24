@@ -27,4 +27,5 @@ htmlcov/
 *,cover
 shop/shop.db
 shop/static/products_images
+*.db
 

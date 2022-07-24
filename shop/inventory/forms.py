@@ -14,7 +14,7 @@ class ProductsForm(FlaskForm):
     ID = IntegerField('ID', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
     image = FileField('Image', validators=[FileAllowed(
-        ['jpg', 'png', 'jpeg', 'JPG', 'PNG', 'JPEG'], DataRequired())])
+        ['jpg', 'png', 'jpeg', 'JPG', 'PNG', 'JPEG'])])
     p_type = SelectField('Select product type', validators=[DataRequired()])
     unit = SelectField('Select unit', validators=[DataRequired()])
     price = IntegerField('Price', validators=[DataRequired()])

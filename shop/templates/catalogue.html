@@ -1,124 +1,170 @@
-{% extends 'layout.html' %}
-{% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='catalogue.css') }}">
-    <script src="{{ url_for('static', filename='js/customers/catalogue.js') }}"></script>
-{% endblock head %}
-{% block body %}
-    <!-- Catalogue Links -->
-    <a class="link-design back-icon" href="{{ url_for('main.main_page') }}" >
-        <i class="fa fa-angle-left"></i>
-        Back
-    </a>
-    <div class="catalogue-links">
-        {% for product_type in product_types %}
-            <a href="{{ url_for('customer.catalogue_product_types', product_type=product_type.choices) }}" class="btn btn-success">{{ product_type.choices }}</a>
-        {% endfor %}
-    </div>
+{% extends 'layout.html' %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='catalogue.css') }}"
+/>
+<script src="{{ url_for('static', filename='js/customers/catalogue.js') }}"></script>
+{% endblock head %} {% block body %}
+<!-- Catalogue Links -->
+<a class="link-design back-icon" href="{{ url_for('main.main_page') }}">
+  <i class="fa fa-angle-left"></i>
+  Back
+</a>
+<div class="catalogue-links">
+  {% for product_type in product_types %}
+  <a
+    href="{{ url_for('customer.catalogue_product_types', product_type=product_type.choices) }}"
+    class="btn btn-success"
+    >{{ product_type.choices }}</a
+  >
+  {% endfor %}
+</div>
 
-    <!-- Latest Products -->
-    <fieldset>
-        <legend>Latest Products</legend>
-        <div class="scroll">
-            <span onclick="scrollToLeft('laestSingleCatalogue', 'latestCatalogue')">
-                <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </span>
-            <ul class="catalogue" id="latestCatalogue">
-                {% for latest_product in latest_products.items %}
-                    <li id="laestSingleCatalogue">
-                        <div class="content">
-                            <a href="#" class="corner-link"></a>
-                            <div class="corner-text-wrapper">
-                                <div class="corner-text">
-                                <span>{{ latest_product.price }} Ks</span>
-                                </div>
-                            </div>
-                        </div>
-                        <img 
-                        src="{{ url_for('static', filename='products_images/'+latest_product.image) }}" 
-                        alt="" data-bs-toggle="modal"
-                        data-bs-target="#latestDiv{{ latest_product.product_id }}Modal">
-                        <span class="product-name">
-                            <span>
-                                <span>{{ latest_product.name }}</span>
-                                <small class="ownerName">By: {{ latest_product.user.username }}</small>
-                            </span>
-                            <span title="Add to cart" class="addToCart">+</span>
-                        </span>
-                    </li>
-                    <!-- Modal -->
-                    <div class="modal fade modal-font" id="latestDiv{{ latest_product.product_id }}Modal" tabindex="-1" aria-labelledby="latestDiv{{ latest_product.product_id }}ModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content bg-dark">
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="latestDiv{{ latest_product.product_id }}ModalLabel">{{ latest_product.name }}(ID: {{ latest_product.product_id }})</h5>
-                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img class="zoom-img" src="{{ url_for('static', filename='products_images/'+latest_product.image) }}" alt="">
-                            </div>
-                            <div class="modal-footer">
-                            <div class="w-100">
-                                <div class="modal-footer-cus">
-                                Price: <span id="latest_table_price_modal_span_{{ latest_product.id }}">{{ latest_product.price }}</span>
-                                </div>
-                                <div class="modal-footer-cus">
-                                Unit: <span id="latest_table_unit_modal_span_{{ latest_product.id }}">{{ latest_product.unit }}</span>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                <li class="see-more">
-                    <span>
-                        <a href="#">See more</a>
-                    </span>
-                </li>
-            </ul>
-            <span onclick="scrollToRight('laestSingleCatalogue', 'latestCatalogue')">
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </span>
+<!-- Latest Products -->
+<fieldset>
+  <legend>Latest Products</legend>
+  <div class="scroll">
+    <span onclick="scrollToLeft('laestSingleCatalogue', 'latestCatalogue')">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    </span>
+    <ul class="catalogue" id="latestCatalogue">
+      {% for latest_product in latest_products.items %}
+      <li id="laestSingleCatalogue">
+        <div class="content">
+          <a href="#" class="corner-link"></a>
+          <div class="corner-text-wrapper">
+            <div class="corner-text">
+              <span>{{ latest_product.price }} Ks</span>
+            </div>
+          </div>
         </div>
-    </fieldset>
+        <img
+          src="{{ url_for('static', filename=''+latest_product.image) }}"
+          alt=""
+          data-bs-toggle="modal"
+          data-bs-target="#latestDiv{{ latest_product.product_id }}Modal"
+        />
+        <span class="product-name">
+          <span>
+            <span>{{ latest_product.name }}</span>
+            <small class="ownerName"
+              >By: {{ latest_product.user.username }}</small
+            >
+          </span>
+          <span title="Add to cart" class="addToCart">+</span>
+        </span>
+      </li>
+      <!-- Modal -->
+      <div
+        class="modal fade modal-font"
+        id="latestDiv{{ latest_product.product_id }}Modal"
+        tabindex="-1"
+        aria-labelledby="latestDiv{{ latest_product.product_id }}ModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content bg-dark">
+            <div class="modal-header">
+              <h5
+                class="modal-title"
+                id="latestDiv{{ latest_product.product_id }}ModalLabel"
+              >
+                {{ latest_product.name }}(ID: {{ latest_product.product_id }})
+              </h5>
+              <button
+                type="button"
+                class="btn-close bg-light"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <img
+                class="zoom-img"
+                src="{{ url_for('static', filename=''+latest_product.image) }}"
+                alt=""
+              />
+            </div>
+            <div class="modal-footer">
+              <div class="w-100">
+                <div class="modal-footer-cus">
+                  Price:
+                  <span
+                    id="latest_table_price_modal_span_{{ latest_product.id }}"
+                    >{{ latest_product.price }}</span
+                  >
+                </div>
+                <div class="modal-footer-cus">
+                  Unit:
+                  <span
+                    id="latest_table_unit_modal_span_{{ latest_product.id }}"
+                    >{{ latest_product.unit }}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      <li class="see-more">
+        <span>
+          <a href="#">See more</a>
+        </span>
+      </li>
+    </ul>
+    <span onclick="scrollToRight('laestSingleCatalogue', 'latestCatalogue')">
+      <i class="fa fa-arrow-right" aria-hidden="true"></i>
+    </span>
+  </div>
+</fieldset>
 
-    <!-- Best sells -->
-    <fieldset>
-        <legend>Best sells</legend>
-        <div class="scroll">
-            <span onclick="scrollToLeft('bestSellSingleCatalogue', 'bestSellsCatalogue')">
-                <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </span>
-            <ul class="catalogue" id="bestSellsCatalogue">
-                {% for latest_product in latest_products.items %}
-                    <li id="bestSellSingleCatalogue">
-                        <div class="content">
-                            <a href="#" class="corner-link"></a>
-                            <div class="corner-text-wrapper">
-                                <div class="corner-text">
-                                <span>{{ latest_product.price }} Ks</span>
-                                </div>
-                            </div>
-                        </div>
-                        <img src="{{ url_for('static', filename='products_images/'+latest_product.image) }}" alt="">
-                        <span class="product-name">
-                            <span>
-                                <span>{{ latest_product.name }}</span>
-                                <small class="ownerName">By: {{ latest_product.user.username }}</small>
-                            </span>
-                            <span title="Add to cart" class="addToCart">+</span>
-                        </span>
-                    </li>
-                {% endfor %}
-                <li class="see-more">
-                    <span>
-                        <a href="#">See more</a>
-                    </span>
-                </li>
-            </ul>
-            <span onclick="scrollToRight('bestSellSingleCatalogue', 'bestSellsCatalogue')">
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </span>
+<!-- Best sells -->
+<fieldset>
+  <legend>Best sells</legend>
+  <div class="scroll">
+    <span
+      onclick="scrollToLeft('bestSellSingleCatalogue', 'bestSellsCatalogue')"
+    >
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    </span>
+    <ul class="catalogue" id="bestSellsCatalogue">
+      {% for latest_product in latest_products.items %}
+      <li id="bestSellSingleCatalogue">
+        <div class="content">
+          <a href="#" class="corner-link"></a>
+          <div class="corner-text-wrapper">
+            <div class="corner-text">
+              <span>{{ latest_product.price }} Ks</span>
+            </div>
+          </div>
         </div>
-    </fieldset>
+        <img
+          src="{{ url_for('static', filename=''+latest_product.image) }}"
+          alt=""
+        />
+        <span class="product-name">
+          <span>
+            <span>{{ latest_product.name }}</span>
+            <small class="ownerName"
+              >By: {{ latest_product.user.username }}</small
+            >
+          </span>
+          <span title="Add to cart" class="addToCart">+</span>
+        </span>
+      </li>
+      {% endfor %}
+      <li class="see-more">
+        <span>
+          <a href="#">See more</a>
+        </span>
+      </li>
+    </ul>
+    <span
+      onclick="scrollToRight('bestSellSingleCatalogue', 'bestSellsCatalogue')"
+    >
+      <i class="fa fa-arrow-right" aria-hidden="true"></i>
+    </span>
+  </div>
+</fieldset>
 {% endblock body %}
