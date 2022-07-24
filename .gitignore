@@ -28,4 +28,4 @@ htmlcov/
 shop/shop.db
 shop/static/products_images
 *.db
-
+migrations/
