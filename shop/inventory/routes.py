@@ -208,37 +208,17 @@ def delete_product(product_id):
         abort(403)
     product = Products.query.get_or_404(product_id)
     if product and product.user == current_user:
-        # delete product image
-        image_path = os.path.join(
-            current_app.root_path, f'static/products_images/', product.image)
-        print('HERE: ', image_path)
-        if os.path.exists(image_path):
-            os.remove(image_path)
-            db.session.delete(product)
-            db.session.commit()
-            flash(f'Product Deleted ID: {product.product_id}', 'success')
-            return redirect(url_for('inventory.products'))
-        else:
-            flash(f'Please try again later or Contact admin.', 'danger')
-            return redirect(url_for('inventory.products'))
-    else:
-        flash(f'There the product does not exist.', 'danger')
-        return redirect(url_for('inventory.products'))
-
-
-@inventory.route('/products/delete_test/<int:product_id>')
-@login_required
-def delete_product_test(product_id):
-    if current_user.account_type != 'admin':
-        abort(403)
-    product = Products.query.get_or_404(product_id)
-    if product and product.user == current_user:
-        # delete product image
-        image_path = os.path.join(
-            current_app.root_path, f'static/products_images/', product.image)
-        print('HERE: ', image_path)
-        if os.path.exists(image_path):
-            os.remove(image_path)
+        # # delete product image
+        # image_path = os.path.join(
+        #     current_app.root_path, f'static/products_images/', product.image)
+        # print('HERE: ', image_path)
+        # if os.path.exists(image_path):
+        #     os.remove(image_path)
+        #     db.session.delete(product)
+        #     db.session.commit()
+        #     result = f'Product Deleted ID: {product.product_id}'
+        #     return jsonify({'status': True, 'result': result})
+        if product.image == "favicon.ico":
             db.session.delete(product)
             db.session.commit()
             result = f'Product Deleted ID: {product.product_id}'

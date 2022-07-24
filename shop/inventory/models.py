@@ -1,3 +1,4 @@
+from email.policy import default
 from shop import db
 
 
@@ -17,9 +18,9 @@ class Products(db.Model):
     image = db.Column(db.String(20), nullable=False, default='favicon.ico')
     unit = db.Column(db.String(10), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    purchase_price = db.Column(db.Float)
-    extra_costs = db.Column(db.Float)
-    percentage = db.Column(db.Float)
+    purchase_price = db.Column(db.Float, default=0.0)
+    extra_costs = db.Column(db.Float, default=0.0)
+    percentage = db.Column(db.Float, default=0.0)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     p_type = db.Column(db.String(20), nullable=False)
 

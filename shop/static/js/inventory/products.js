@@ -57,7 +57,7 @@ function setSelectDefault(product_id, product_type, product_unit) {
 function deleteProduct(product_id) {
     product_id = parseInt(product_id);
     var http = new XMLHttpRequest();
-    var url = "/products/delete_test/"+product_id;
+    var url = "/products/delete/"+product_id;
     http.open('GET', url, true);
     http.send();
     http.onload = function(){
