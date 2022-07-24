@@ -26,6 +26,7 @@ htmlcov/
 .coverage.*
 *,cover
 shop/shop.db
-shop/static/products_images
+products_images
 *.db
-/migrations
+__pycache__
+migrations
