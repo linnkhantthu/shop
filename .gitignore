@@ -29,4 +29,3 @@ shop/shop.db
 products_images
 *.db
 __pycache__
-migrations/
