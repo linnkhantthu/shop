@@ -225,7 +225,7 @@ def delete_product(product_id):
             return jsonify({'status': True, 'result': result})
         else:
             result = f'Please try again later or Contact admin.'
-            jsonify({'status': False, 'result': result})
+            return jsonify({'status': False, 'result': result})
     else:
         result = f'There the product does not exist.'
         return jsonify({'status': False, 'result': result})
