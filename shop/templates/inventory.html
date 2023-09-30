@@ -1,28 +1,35 @@
-{% extends 'layout.html' %}
-{% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='main_page.css') }}">
-{% endblock head %}
-{% block body %}
-    <main class="container">
-        <!-- Header -->
-        <div class="div-header">
-            <a class="link-design back-icon" href="{{ url_for('main.main_page') }}">
-              <i class="fa fa-angle-left"></i> Back
-            </a>
-        </div>
-        <div id="main-options">
-            <span>
-                <a href="{{ url_for('inventory.products') }}">
-                    <img src="{{ url_for('static', filename='images/products.png') }}" alt="images">
-                    <div class=".centered-text">Products</div>
-                </a>
-            </span>
-            <span>
-                <a href="#">
-                    <img src="{{ url_for('static', filename='images/products.png') }}" alt="images">
-                    <div class=".centered-text">Products</div>
-                </a>
-            </span>
-        </div>
-    </main>
+{% extends 'layout.html' %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='main_page.css') }}"
+/>
+{% endblock head %} {% block body %}
+<main class="container">
+  <!-- Header -->
+  <div class="div-header">
+    <a class="link-design back-icon" href="{{ url_for('main.main_page') }}">
+      <i class="fa fa-angle-left"></i> Back
+    </a>
+  </div>
+  <div id="main-options">
+    <span>
+      <a href="{{ url_for('inventory.products') }}">
+        <img
+          src="{{ url_for('static', filename='images/products.png') }}"
+          alt="images"
+        />
+        <div class=".centered-text">Products</div>
+      </a>
+    </span>
+    <span>
+      <a href="#">
+        <img
+          src="{{ url_for('static', filename='images/products.png') }}"
+          alt="images"
+        />
+        <div class=".centered-text">Products</div>
+      </a>
+    </span>
+  </div>
+</main>
 {% endblock body %}

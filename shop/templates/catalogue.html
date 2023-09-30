@@ -39,7 +39,7 @@
           </div>
         </div>
         <img
-          src="{{ url_for('static', filename=''+latest_product.image) }}"
+          src="{{ url_for('static', filename='/products_images/'+latest_product.image) }}"
           alt=""
           data-bs-toggle="modal"
           data-bs-target="#latestDiv{{ latest_product.product_id }}Modal"
@@ -81,7 +81,7 @@
             <div class="modal-body">
               <img
                 class="zoom-img"
-                src="{{ url_for('static', filename=''+latest_product.image) }}"
+                src="{{ url_for('static', filename='/products_images/'+latest_product.image) }}"
                 alt=""
               />
             </div>
@@ -140,7 +140,7 @@
           </div>
         </div>
         <img
-          src="{{ url_for('static', filename=''+latest_product.image) }}"
+          src="{{ url_for('static', filename='/products_images/'+latest_product.image) }}"
           alt=""
         />
         <span class="product-name">

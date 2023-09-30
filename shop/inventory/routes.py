@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, AddProductTypeForm, UnitChoices, \
     AddUnitForm, ProductUpdateForm
 from shop import db
-from shop.inventory.utils import save_picture
+from shop.inventory.utils import save_picture, isInt
 import os
 
 inventory = Blueprint('inventory', __name__)
@@ -50,23 +50,25 @@ def products():
 
         if search and form.p_type.data:
             try:
+                print("INT - The search: ", search)
                 int_search = int(search)
                 int_search = '%{0}%'.format(int_search)
                 products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
                                                  Products.product_id.ilike(int_search)).paginate(page=page, per_page=5)
             except:
+                print("STR - The search: ", search)
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
             form.search.data = search
         # filter by only search
         elif search and not form.p_type.data:
-            try:
-                int_search = int(search)
-                int_search = '%{0}%'.format(int_search)
+            if (isInt(search)):
+                int_search = '%{0}%'.format(int(search))
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.product_id.ilike(int_search)).paginate(page=page, per_page=5)
-            except:
+
+            else:
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
