@@ -7,22 +7,23 @@ from wtforms.fields import SubmitField
 from wtforms.validators import DataRequired, ValidationError
 from shop.inventory.models import Products, ProductTypeChoices, UnitChoices
 from flask_login import current_user
-from flask import flash
 
 
 class ProductsForm(FlaskForm):
     ID = IntegerField('ID', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
-    image = FileField('Image', validators=[FileAllowed(
-        ['jpg', 'png', 'jpeg', 'JPG', 'PNG', 'JPEG'])])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png',
+                                                       'jpeg', 'JPG',
+                                                        'PNG', 'JPEG'])])
     p_type = SelectField('Select product type', validators=[DataRequired()])
     unit = SelectField('Select unit', validators=[DataRequired()])
     price = IntegerField('Price', validators=[DataRequired()])
     submit = SubmitField('Add')
 
+    # Checking if there is the same product Id for the same user
     def validate_ID(self, ID):
-        product = Products.query.filter(
-            Products.product_id == ID.data, Products.user_id == current_user.id).first()
+        product = Products.query.filter(Products.product_id == ID.data,
+                                        Products.user_id == current_user.id).first()
 
         if product:
             last_product = Products.query.order_by(Products.user_id == current_user.id,
@@ -74,7 +75,8 @@ class ProductUpdateForm(FlaskForm):
     submit_update_form = SubmitField('Update')
 
     def validate_name(self, name, product_id):
-        product = Products.query.filter(
-            Products.name == name, Products.user_id == current_user.id, Products.id != product_id).first()
+        product = Products.query.filter(Products.name == name,
+                                        Products.user_id == current_user.id,
+                                        Products.id != product_id).first()
         if product:
             raise ValidationError("Product name already exist.")

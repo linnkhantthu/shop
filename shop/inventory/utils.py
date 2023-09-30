@@ -7,6 +7,13 @@ from shop.inventory.models import Products
 from flask_login import current_user
 
 
+def isAdmin():
+    if (current_user.account_type == 'admin'):
+        return True
+    else:
+        return False
+
+
 def save_picture(form_picture):
     print(form_picture)
     random_hex = secrets.token_hex(8)

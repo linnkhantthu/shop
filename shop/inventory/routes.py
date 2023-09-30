@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, current_app, request, jsonify, abort
+from flask import Blueprint, render_template, flash, redirect,\
+    url_for, current_app, request, jsonify, abort
 from shop.inventory.models import Products
 from flask_login import current_user, login_required
-from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, AddProductTypeForm, UnitChoices, \
-    AddUnitForm, ProductUpdateForm
+from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, \
+    AddProductTypeForm, UnitChoices, AddUnitForm, ProductUpdateForm
 from shop import db
-from shop.inventory.utils import save_picture, isProductExist
+from shop.inventory.utils import isAdmin, save_picture, isProductExist
 import os
 
 inventory = Blueprint('inventory', __name__)
@@ -13,7 +14,7 @@ inventory = Blueprint('inventory', __name__)
 @inventory.route('/inventory_page')
 @login_required
 def inventory_page():
-    if current_user.account_type != 'admin':
+    if not isAdmin:
         abort(403)
     return render_template('inventory.html')
 
@@ -22,55 +23,75 @@ def inventory_page():
 @login_required
 def products():
     # Check if the user is Admin
-    if current_user.account_type != 'admin':
+    if not isAdmin:
         abort(403)
 
+    # Forms
+    searchProductForm = SearchProductForm()
+    product_update_form = ProductUpdateForm()
+
+    # Initializing product types
     form_product_type_choices = [(None, 'Select product type')]
-    search = None
+
+    search = None  # Initializing Search
+
+    # Getting number of page request
     page = request.args.get('page', 1, type=int)
+
+    # Fetching products of the current user from db
     products = Products.query.filter_by(
         user=current_user).paginate(page=page, per_page=5)
-    form = SearchProductForm()
-    product_update_form = ProductUpdateForm()
+
+    # Fetching product types of the current user from db
     product_type_choices = ProductTypeChoices.query.filter_by(
         user=current_user)
+
+    # Adding product types to the initialized tuple -> format (choices,choices)
     for product_type_choice in product_type_choices:
         temp = (product_type_choice.choices, product_type_choice.choices)
         form_product_type_choices.append(temp)
-    form.p_type.choices = form_product_type_choices
-    if form.validate_on_submit():
-        print("Search Field: ", form.search.data)
-        print("Search Field: ", form.p_type.data)
+
+    # Inserting the tuple into the product type form
+    searchProductForm.p_type.choices = form_product_type_choices
+
+    # if the searchProductForm is validate on submit
+    if searchProductForm.validate_on_submit():
+
         # filter by both args i.e: search and product type
-        search = form.search.data
-        product_type_search = form.p_type.data
-        if search == '':
-            # if user didn't give search args
+        search = searchProductForm.search.data
+        product_type_search = searchProductForm.p_type.data
+
+        if search == '':  # if user didn't give search args
             search = None
-        if product_type_search == 'None':
-            # if user didn't give product type
+
+        if product_type_search == 'None':  # if user didn't give product type
             product_type_search = None
 
+        # Search by name and product type
         if search and product_type_search:
-            # Search by name and product type
-            try:
-                int_search = int(search)
-                if (isProductExist(search)):
-                    products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
-                                                     Products.product_id == int_search).paginate(page=page, per_page=5)
+            try:  # Using try except as we don't know search args is String or Int
+                int_search = int(search)  # converting search into Integer
+                if (isProductExist(search)):  # Checking if the product id is searched by the exact id
+                    # Will give the exact product
+                    products = Products.query.filter(
+                        Products.user == current_user,
+                        Products.p_type == searchProductForm.p_type.data,
+                        Products.product_id == int_search).paginate(page=page, per_page=5)
                 else:
-                    products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
+                    # Will give the products which ids are greather than the search args
+                    products = Products.query.filter(Products.user == current_user,
+                                                     Products.p_type == searchProductForm.p_type.data,
                                                      Products.product_id >= int_search).paginate(page=page, per_page=5)
-                print(Products.query.filter(
-                    Products.product_id == int(search)).count())
 
-            # Search by id and product type
+            # Search by product name and product type
+            # Since we can't convert the search arg it has to be the String that means ...
+            # ...the user is searching with the product name
             except:
-                # print("STR - The search: ", search)
                 str_search = '%{0}%'.format(search)
-                products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
+                products = Products.query.filter(Products.user == current_user, Products.p_type == searchProductForm.p_type.data,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
-            form.search.data = search
+            # Putting the search arg into the searchForm
+            # searchProductForm.search.data = search
         # filter by only search
         elif search and not product_type_search:
             # search only with id
@@ -87,7 +108,7 @@ def products():
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
-            form.search.data = search
+            searchProductForm.search.data = search
         elif not search and product_type_search:
             try:
                 products = Products.query.filter(Products.user == current_user,
@@ -95,7 +116,7 @@ def products():
             except:
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.p_type == product_type_search).paginate(page=page, per_page=5)
-            form.search.data = search
+            searchProductForm.search.data = search
         else:
             pass
 
@@ -115,7 +136,7 @@ def products():
         form_unit_choices.append(temp)
     product_update_form.unit.choices = form_unit_choices
     product_update_form.p_type.choices = form_product_type_choices
-    return render_template('products.html', products=products, form=form, search=search, product_update_form=product_update_form)
+    return render_template('products.html', products=products, form=searchProductForm, search=search, product_update_form=product_update_form)
 
 
 @inventory.route('/products/add_products', methods=['GET', 'POST'])
