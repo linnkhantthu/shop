@@ -3,6 +3,8 @@ import secrets
 from PIL import Image
 from flask import url_for, current_app
 from io import StringIO
+from shop.inventory.models import Products
+from flask_login import current_user
 
 
 def save_picture(form_picture):

@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, AddProductTypeForm, UnitChoices, \
     AddUnitForm, ProductUpdateForm
 from shop import db
-from shop.inventory.utils import save_picture, isInt
+from shop.inventory.utils import save_picture, isProductExist
 import os
 
 inventory = Blueprint('inventory', __name__)
@@ -41,6 +41,7 @@ def products():
     if form.validate_on_submit():
         # filter by both args i.e: search and product type
         search = form.search.data
+
         if search == '':
             # if user didn't give search args
             search = None
@@ -49,26 +50,32 @@ def products():
             form.p_type.data = None
 
         if search and form.p_type.data:
+            # Search by name and product type
             try:
-                print("INT - The search: ", search)
+                # print("INT - The search: ", search)
                 int_search = int(search)
-                int_search = '%{0}%'.format(int_search)
+                # isProductExist(search)
+                # int_search = '%{0}%'.format(int_search)
                 products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
-                                                 Products.product_id.ilike(int_search)).paginate(page=page, per_page=5)
+                                                 Products.product_id >= int_search).paginate(page=page, per_page=5)
+
+            # Search by id and product type
             except:
-                print("STR - The search: ", search)
+                # print("STR - The search: ", search)
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
             form.search.data = search
         # filter by only search
         elif search and not form.p_type.data:
-            if (isInt(search)):
-                int_search = '%{0}%'.format(int(search))
+            # search only with id
+            try:
+                # int_search = '%{0}%'.format(int(search))
                 products = Products.query.filter(Products.user == current_user,
-                                                 Products.product_id.ilike(int_search)).paginate(page=page, per_page=5)
+                                                 Products.product_id >= int(search)).paginate(page=page, per_page=5)
 
-            else:
+            # Search by only name
+            except:
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
