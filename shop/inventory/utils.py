@@ -28,3 +28,16 @@ def isInt(s):
         return False
     else:
         return True
+
+
+def isProductExist(product_id):
+    try:
+        product = Products.query.filter(
+            Products.user == current_user, Products.product_id == int(product_id)).count()
+    except:
+        print("error")
+        return False
+    if (product == 1):
+        return True
+    else:
+        return False

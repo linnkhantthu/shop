@@ -39,25 +39,30 @@ def products():
         form_product_type_choices.append(temp)
     form.p_type.choices = form_product_type_choices
     if form.validate_on_submit():
+        print("Search Field: ", form.search.data)
+        print("Search Field: ", form.p_type.data)
         # filter by both args i.e: search and product type
         search = form.search.data
-
+        product_type_search = form.p_type.data
         if search == '':
             # if user didn't give search args
             search = None
-        if form.p_type.data == 'None':
+        if product_type_search == 'None':
             # if user didn't give product type
-            form.p_type.data = None
+            product_type_search = None
 
-        if search and form.p_type.data:
+        if search and product_type_search:
             # Search by name and product type
             try:
-                # print("INT - The search: ", search)
                 int_search = int(search)
-                # isProductExist(search)
-                # int_search = '%{0}%'.format(int_search)
-                products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
-                                                 Products.product_id >= int_search).paginate(page=page, per_page=5)
+                if (isProductExist(search)):
+                    products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
+                                                     Products.product_id == int_search).paginate(page=page, per_page=5)
+                else:
+                    products = Products.query.filter(Products.user == current_user, Products.p_type == form.p_type.data,
+                                                     Products.product_id >= int_search).paginate(page=page, per_page=5)
+                print(Products.query.filter(
+                    Products.product_id == int(search)).count())
 
             # Search by id and product type
             except:
@@ -67,26 +72,29 @@ def products():
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
             form.search.data = search
         # filter by only search
-        elif search and not form.p_type.data:
+        elif search and not product_type_search:
             # search only with id
             try:
-                # int_search = '%{0}%'.format(int(search))
-                products = Products.query.filter(Products.user == current_user,
-                                                 Products.product_id >= int(search)).paginate(page=page, per_page=5)
-
+                int_search = int(search)
+                if (isProductExist(search)):
+                    products = Products.query.filter(Products.user == current_user,
+                                                     Products.product_id == int_search).paginate(page=page, per_page=5)
+                else:
+                    products = Products.query.filter(Products.user == current_user,
+                                                     Products.product_id >= int_search).paginate(page=page, per_page=5)
             # Search by only name
             except:
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
             form.search.data = search
-        elif not search and form.p_type.data:
+        elif not search and product_type_search:
             try:
                 products = Products.query.filter(Products.user == current_user,
-                                                 Products.p_type == form.p_type.data).paginate(page=page, per_page=5)
+                                                 Products.p_type == product_type_search).paginate(page=page, per_page=5)
             except:
                 products = Products.query.filter(Products.user == current_user,
-                                                 Products.p_type == form.p_type.data).paginate(page=page, per_page=5)
+                                                 Products.p_type == product_type_search).paginate(page=page, per_page=5)
             form.search.data = search
         else:
             pass
