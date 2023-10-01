@@ -5,9 +5,10 @@ from flask_login import current_user, login_required
 from shop.inventory.forms import ProductsForm, SearchProductForm, ProductTypeChoices, \
     AddProductTypeForm, UnitChoices, AddUnitForm, ProductUpdateForm
 from shop import db
-from shop.inventory.utils import isAdmin, save_picture, isProductExist
+from shop.inventory.utils import isAdmin, InventoryUtility
 import os
 
+inventoryUtility = InventoryUtility()
 inventory = Blueprint('inventory', __name__)
 
 
@@ -71,7 +72,8 @@ def products():
         if search and product_type_search:
             try:  # Using try except as we don't know search args is String or Int
                 int_search = int(search)  # converting search into Integer
-                if (isProductExist(search)):  # Checking if the product id is searched by the exact id
+                # Checking if the product id is searched by the exact id
+                if (inventoryUtility.isProductExist(search)):
                     # Will give the exact product
                     products = Products.query.filter(
                         Products.user == current_user,
@@ -97,7 +99,7 @@ def products():
             # search only with id
             try:
                 int_search = int(search)
-                if (isProductExist(search)):
+                if (inventoryUtility.isProductExist(search)):
                     products = Products.query.filter(Products.user == current_user,
                                                      Products.product_id == int_search).paginate(page=page, per_page=5)
                 else:
@@ -108,7 +110,8 @@ def products():
                 str_search = '%{0}%'.format(search)
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.name.ilike(str_search)).paginate(page=page, per_page=5)
-            searchProductForm.search.data = search
+            # searchProductForm.search.data = search
+        # Searching with product type
         elif not search and product_type_search:
             try:
                 products = Products.query.filter(Products.user == current_user,
@@ -116,61 +119,38 @@ def products():
             except:
                 products = Products.query.filter(Products.user == current_user,
                                                  Products.p_type == product_type_search).paginate(page=page, per_page=5)
-            searchProductForm.search.data = search
+            # searchProductForm.search.data = search
         else:
             pass
 
-    form_product_type_choices = []
-    form_unit_choices = []
-    # product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
-    product_type_choices = ProductTypeChoices.query.all()
-    for product_type_choice in product_type_choices:
-        temp = (product_type_choice.choices, product_type_choice.choices)
-        form_product_type_choices.append(temp)
+    # Getting product type choices and unit type choices
+    # Adding the tuples into the form
+    product_update_form.p_type.choices = inventoryUtility.getProductTypeChoices()
+    product_update_form.unit.choices = inventoryUtility.getUnitChoices()
 
-    # initiates 'unit' choices from database
-    # unit_choices = UnitChoices.query.filter(UnitChoices.user_id == current_user.id)
-    unit_choices = UnitChoices.query.filter()
-    for unit_choice in unit_choices:
-        temp = (unit_choice.choices, unit_choice.choices)
-        form_unit_choices.append(temp)
-    product_update_form.unit.choices = form_unit_choices
-    product_update_form.p_type.choices = form_product_type_choices
-    return render_template('products.html', products=products, form=searchProductForm, search=search, product_update_form=product_update_form)
+    return render_template('products.html', products=products, form=searchProductForm,
+                           search=search, product_update_form=product_update_form)
 
 
 @inventory.route('/products/add_products', methods=['GET', 'POST'])
 @login_required
 def add_products():
-    if current_user.account_type != 'admin':
+    if not isAdmin():
         abort(403)
-    # choices for product type and unit
-    form_product_type_choices = []
-    form_unit_choices = []
 
     form = ProductsForm()  # Product Form
     p_type_form = AddProductTypeForm()  # Product Type Form
     unitForm = AddUnitForm()  # Unit Form
 
+    # choices for product type and unit
+    product_type_choices = inventoryUtility.getProductTypeChoices()
+    unit_choices = inventoryUtility.getUnitChoices()
+    form.p_type.choices = product_type_choices
+    form.unit.choices = unit_choices
+
     # get last product To guess what the next product ID would be
-    last_product = Products.query.order_by(
-        Products.user_id == current_user.id, Products.product_id.desc()).first()
-
-    # initiates 'product type' choices from database
-    # product_type_choices = ProductTypeChoices.query.filter(ProductTypeChoices.user_id == current_user.id)
-    product_type_choices = ProductTypeChoices.query.all()
-    for product_type_choice in product_type_choices:
-        temp = (product_type_choice.choices, product_type_choice.choices)
-        form_product_type_choices.append(temp)
-
-    # initiates 'unit' choices from database
-    # unit_choices = UnitChoices.query.filter(UnitChoices.user_id == current_user.id)
-    unit_choices = UnitChoices.query.all()
-    for unit_choice in unit_choices:
-        temp = (unit_choice.choices, unit_choice.choices)
-        form_unit_choices.append(temp)
-    form.unit.choices = form_unit_choices
-    form.p_type.choices = form_product_type_choices
+    last_product = Products.query.order_by(Products.user_id == current_user.id,
+                                           Products.product_id.desc()).first()
 
     # if ProductForm is submitted and passes validation
     if form.submit.data and form.validate_on_submit():
@@ -179,7 +159,7 @@ def add_products():
         #     return redirect(url_for('inventory.add_products'))
         image_file = 'favicon.ico'
         if form.image.data != None:
-            image_file = save_picture(form.image.data)
+            image_file = inventoryUtility.save_picture(form.image.data)
 
         # if the chosen product type not existed in the database?
         prod_type = ProductTypeChoices.query.filter_by(
@@ -456,7 +436,7 @@ def update_product():
                                 'static/products_images', product.image)
             if os.path.exists(path):
                 os.remove(path)
-            new_filename = save_picture(image)
+            new_filename = inventoryUtility.save_picture(image)
             product.image = new_filename
             filename = new_filename
 
